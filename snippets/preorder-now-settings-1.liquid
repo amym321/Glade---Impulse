@@ -1,0 +1,68 @@
+<script type="text/javascript">
+  {% if cart %}
+    window.pn.cart = {};
+  	window.pn.cart = {{cart | json}}
+    window.pn.cart.items = [];
+
+    {% for item in cart.items %}
+      var cart_item = {{item | json}};
+      cart_item["collection_ids"] = [];
+      {% for c in item.product.collections %}
+        cart_item["collection_ids"].push({{c.id}})
+        {% endfor %}
+      window.pn.cart.items.push(cart_item);
+    {% endfor %}
+
+    if (typeof window.pn.cart.items == "object") {
+      for (var i=0; i<window.pn.cart.items.length; i++) {
+        ["sku", "vendor", "url", "image", "handle", "product_type", "product_description"].map(function(a) {
+          delete window.pn.cart.items[i][a]
+        })
+      }
+    }
+  {% endif %}
+</script>
+
+{% raw %}
+<script>
+if(typeof pn === "undefined"){
+  pn = {};
+}
+if(typeof pn.settings === "undefined"){
+  pn.settings = {};
+}
+pn.settings.defaultSetting={"id":16895390,"a":"Preorder Now","b":true,"c":null,"d":"Out of stock","e":false,"f":"Only {{qty}} remaining","g":"","h":"below","i":false,"j":null,"k":null,"l":null,"m":"default","n":null,"o":true,"handle":null,"p":null,"y":null,"q":false,"r":true,"s":null,"t":null,"u":1,"v":false,"w":"ribbon","tag":null,"x":null,"z":"no_discount","aa":"0.0","ab":0,"price":"0.0","compare_at_price":"0.0"};
+pn.settings.singleProductSettings=[{"id":16895534,"a":"Preorder Now For Winter 2021/22","b":true,"c":null,"d":"Out of stock","e":false,"f":"Only {{qty}} remaining","g":"PREORDER NOW TO ARRIVE BEFORE SKI SEASON - WE WILL SELL OUT AGAIN THIS SEASON","h":"below","i":false,"j":null,"k":null,"l":null,"m":"variant","n":"36080149790883","o":false,"handle":"magflight-goggle","p":"5646026637475","y":"https://cdn.shopify.com/s/files/1/1443/1260/products/5.jpg?v=1602014341","q":false,"r":false,"s":-44,"t":null,"u":1,"v":true,"w":"ribbon","tag":null,"x":"","z":"no_discount","aa":"0.0","ab":0,"price":"0.0","compare_at_price":"0.0"},{"id":16895465,"a":"Preorder Now For Winter 2021/22","b":true,"c":null,"d":"Out of stock","e":false,"f":"Only {{qty}} remaining","g":"PREORDER NOW TO ARRIVE BEFORE SKI SEASON - WE WILL SELL OUT AGAIN THIS SEASON","h":"below","i":false,"j":null,"k":null,"l":null,"m":"variant","n":"36080149856419","o":false,"handle":"magflight-goggle","p":"5646026637475","y":"https://cdn.shopify.com/s/files/1/1443/1260/products/5.jpg?v=1602014341","q":false,"r":false,"s":-7,"t":null,"u":1,"v":true,"w":"ribbon","tag":null,"x":"","z":"no_discount","aa":"0.0","ab":0,"price":"0.0","compare_at_price":"0.0"},{"id":16895532,"a":"Preorder Now For Winter 2021/22","b":true,"c":null,"d":"Out of stock","e":false,"f":"Only {{qty}} remaining","g":"PREORDER NOW TO ARRIVE BEFORE SKI SEASON - WE WILL SELL OUT AGAIN THIS SEASON","h":"below","i":false,"j":null,"k":null,"l":null,"m":"variant","n":"36316151283875","o":false,"handle":"magflight-goggle","p":"5646026637475","y":"https://cdn.shopify.com/s/files/1/1443/1260/products/5.jpg?v=1602014341","q":false,"r":false,"s":-21,"t":null,"u":1,"v":true,"w":"ribbon","tag":null,"x":"","z":"no_discount","aa":"0.0","ab":0,"price":"0.0","compare_at_price":"0.0"},{"id":16895527,"a":"Preorder Now For Winter 2021/22","b":true,"c":null,"d":"Out of stock","e":false,"f":"Only {{qty}} remaining","g":"PREORDER NOW TO ARRIVE BEFORE SKI SEASON - WE WILL SELL OUT AGAIN THIS SEASON","h":"below","i":false,"j":null,"k":null,"l":null,"m":"variant","n":"36080149823651","o":false,"handle":"magflight-goggle","p":"5646026637475","y":"https://cdn.shopify.com/s/files/1/1443/1260/products/5.jpg?v=1602014341","q":false,"r":false,"s":-20,"t":null,"u":1,"v":true,"w":"ribbon","tag":null,"x":"","z":"no_discount","aa":"0.0","ab":0,"price":"0.0","compare_at_price":"0.0"}];
+pn.settings.tagSettings=[];
+</script>
+<style type="text/css">
+  .pn-original-subtotal{
+    text-decoration: line-through;
+    display:inline-block;
+  }
+  .pn-discounted-subtotal{
+    font-weight:bold;
+    margin-left:20px;
+    display:inline-block;
+    font-size: 1.3em;
+  }
+
+  .pn-line-item-original-price {
+    text-decoration: line-through;
+  }
+
+  .pn-line-item-discounted-price {
+    font-size: 1.2em;
+    margin-left: 8px;
+  }
+</style>
+{% endraw %}
+
+
+<div id="pn-mixed-cart-warning" class="pn-modal">
+  <div id="pn-mixed-cart-warning-content">
+    <span id="pn-modal-close-btn">x</span>
+    <h2 id="pn-mixed-cart-warning-title"></h2>
+    <div id="pn-mixed-cart-warning-text"></div>
+  </div>
+</div>

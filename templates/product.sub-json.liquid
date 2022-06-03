@@ -1,0 +1,9 @@
+{% layout none %}{% capture output %}
+{
+"id":{{product.id}},
+"handle":"{{product.handle}}",
+"key":"{{product.key}}",
+"title":{{product.title | json}},
+"images":[{{product.images[0].src | json}}],
+"variants":[{% for variant in product.variants %}{"id":{{variant.id}},"title":{{variant.title | json}},"inventory_quantity":{{variant.inventory_quantity}},"available":{{variant.available}},"price":{{variant.price}}}{% unless forloop.last %},{% endunless %}{% endfor %}]
+}{% endcapture %}{{ output | strip_newlines }}

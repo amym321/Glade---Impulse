@@ -1,0 +1,88 @@
+{% comment %} Custom Boxes {% endcomment %}
+<style>
+  @media screen and (min-width: 769px) {
+    .c-box-parent {
+      height: 100%;
+    }
+  }
+</style>
+
+<div class="page-width-custom">
+  <div class="box-section-wrapper">
+    {%- if section.settings.title != blank -%}
+    <div class="centered-text-wrapper">
+      <h2>{{ section.settings.title | escape }}</h2>
+    </div>
+    {%- endif -%}
+    <div class="flex-col-wrap">
+      {% for box in section.blocks %}
+      <div class="flex-3-col">
+        <div class="c-box-parent">
+          {% if box.settings.custom_box_heading %}
+          <h3 class="c-box-heading">{{ box.settings.custom_box_heading }}</h3>
+          {% endif %}
+          {% if box.settings.custom_box_paragraph %}
+          <p class="c-box-p">{{ box.settings.custom_box_paragraph }}</p>
+          {% endif %}
+          {% if box.settings.custom_box_link_text %}
+          <a href="{{ box.settings.custom_box_link }}" class="white-link">{{ box.settings.custom_box_link_text }}</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Custom Boxes",
+	"class": "shopify-section--custom-boxes",
+	"max_blocks": 3,
+	"settings": [
+		{
+			"id": "title",
+			"type": "text",
+			"label": "Section Title",
+			"default": "Why Glade?"
+		}
+	],
+	"blocks": [
+		{
+			"type": "custom-box",
+			"name": "Custom Box",
+			"settings": [
+				{
+					"type": "text",
+					"id": "custom_box_heading",
+					"label": "Title",
+					"default": "Heading"
+				},
+				{
+					"type": "textarea",
+					"id": "custom_box_paragraph",
+					"label": "Text",
+					"default": "Type your paragraph here..."
+				},
+				{
+					"type": "text",
+					"id": "custom_box_link_text",
+					"label": "Box Link Text",
+					"default": "Text Link"
+				},
+				{
+					"type": "url",
+					"id": "custom_box_link",
+					"label": "Box Link URL"
+				}
+			]
+		}
+	],
+    "presets": [{
+      "name": " Custom Boxes",
+      "category": "Text"
+    }]
+  }
+{% endschema %}
+

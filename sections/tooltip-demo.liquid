@@ -1,0 +1,141 @@
+
+<div class="tooltip-section">
+  <div class="page-width">
+    <div class="tooltips-main">
+    	<div class="tooltip-img">
+      {%- if section.settings.image != blank -%}
+        <img src="{{section.settings.image | img_url:'master'}}" >
+      {%- endif -%}
+    </div>  
+   		<div class="tooltip_overlay" >
+      {%- for block in section.blocks -%}
+        <div class="tooltip_block" style="top:{{ block.settings.top }}%; left:{{ block.settings.left }}%">
+          <img src="{{ block.settings.product_image | img_url:'medium'}}" >
+          <div class="tooltip-desc {% if block.settings.wrap_reverse %} wrap-reverse {%endif %}">
+             <h5>{{ block.settings.title }}</h5>   
+          </div>
+        </div>
+      {%- endfor -%} 
+    </div>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  .tooltips-main{
+   position:relative;
+  }
+  .tooltip_block{
+    position: absolute;
+  }
+  .tooltip-img img{
+    width:100%;
+   }
+  .tooltip-desc {
+    max-width: 320px;
+}
+ .wrap-reverse {
+    display:flex;
+    flex-flow:wrap-reverse;
+  }
+
+</style>
+{% schema %}
+ {
+  "name": "Tooltips-demo",
+  "class": "sd-tooltips",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Tooltips by Sections.design"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Main image"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_color",
+      "label": "Tooltip text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_background_color",
+      "label": "Tooltip background color",
+      "default": "#64cbdf"
+    },
+    {
+      "type": "color",
+      "id": "tooltip_focus_color",
+      "label": "Tooltip focus color",
+      "default": "#ff0000"
+    },
+    {
+      "type": "text",
+      "id": "breakpoint",
+      "label": "Media query breakpoint",
+      "default": "768"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "Tooltip",
+      "name": "Tooltip",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Tooltip",
+          "default": "Tooltip title"
+        },
+        {
+          "type": "range",
+          "id": "top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Top position",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Left position",
+          "default": 50
+        },
+        {
+            "type": "checkbox",
+            "id": "wrap_reverse",
+            "label": "Is the text below?",
+            "default": false
+          }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tooltips",
+      "category": "Tooltips by Sections.design",
+      "blocks": [
+        {
+          "type": "Tooltip"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+

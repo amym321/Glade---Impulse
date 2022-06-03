@@ -1,0 +1,920 @@
+{{ 'nvd-styles.css' | asset_url | stylesheet_tag }}
+
+<script>
+      var Shopify = Shopify || { };
+      Shopify.money_format = '${{ amount }}';
+      Shopify.formatMoney = function (cents, format = shopCurrency) {
+      if (typeof cents == 'string') {
+        cents = cents.replace('.', '');
+      }
+      var value = '';
+      var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+      var formatString = format || this.money_format;
+
+      function defaultOption(opt, def) {
+        return typeof opt == 'undefined' ? def : opt;
+      }
+
+      function formatWithDelimiters(number, precision, thousands, decimal) {
+        precision = defaultOption(precision, 2);
+      thousands = defaultOption(thousands, ',');
+      decimal = defaultOption(decimal, '.');
+
+      if (isNaN(number) || number == null) {
+          return 0;
+        }
+
+      number = (number / 100.0).toFixed(precision);
+
+      var parts = number.split('.'),
+      dollars = parts[0].replace(
+      /(\d)(?=(\d\d\d)+(?!\d))/g,
+      '$1' + thousands
+      ),
+      cents = parts[1] ? decimal + parts[1] : '';
+
+      return dollars + cents;
+      }
+
+      switch (formatString.match(placeholderRegex)[1]) {
+        case 'amount':
+      value = formatWithDelimiters(cents, 2);
+      break;
+      case 'amount_no_decimals':
+      value = formatWithDelimiters(cents, 0);
+      break;
+      case 'amount_with_comma_separator':
+      value = formatWithDelimiters(cents, 2, '.', ',');
+      break;
+      case 'amount_no_decimals_with_comma_separator':
+      value = formatWithDelimiters(cents, 0, '.', ',');
+      break;
+      }
+
+      return formatString.replace(placeholderRegex, value);
+    };
+
+      // TODO: get all values from metafields
+      let shop = Shopify.shop;
+
+
+
+      let showWidget;
+
+      let autoInsurance;
+
+    let prefetch = async (callback) => {
+        // TODO: check nvd_config in localStorage
+        let nvd_config = localStorage.getItem('nvdconfig')
+      ? JSON.parse(localStorage.getItem('nvdconfig'))
+      : null;
+      // verify with the shop name
+      if (nvd_config) {
+        // check expiration
+        let today = new Date();
+      let expiration = new Date(nvd_config.expiration);
+        if (today > expiration) {
+        // expired
+        localStorage.removeItem('nvdconfig');
+      nvd_config = null;
+      prefetch();
+        }
+      // var tomorrow = new Date();
+      // tomorrow.setDate(today.getDate()+3);
+      console.log('Navidium config avaialable in storage');
+      } else {
+        console.log('Navidium config not available in storage');
+      await fetch(
+      `https://app.navidiumapp.com/api/new-widget-api-test-29th-march.php?shop_url=${shop}`
+      )
+          .then((res) => res.json())
+          .then((initialData) => {
+        console.log(initialData);
+      showWidget = initialData.nvd_show_cart;
+
+      autoInsurance = initialData.nvd_auto_insurance;
+      let today = new Date()
+      // extract the configuration data
+      let shopConfig = {
+        success: initialData.success,
+      show_widget: initialData.nvd_show_cart,
+      auto_insurance: initialData.nvd_auto_insurance,
+      nvd_name: initialData.nvd_name,
+      product_exclusion: initialData.product_exclusion.split(','),
+      nvd_subtitle: initialData.nvd_subtitle,
+      nvd_description: initialData.nvd_description,
+      nvd_message: initialData.nvd_message,
+      protection_variants: initialData.nvd_variants,
+      min_protection_price: initialData.min_protection_value,
+      max_protection_price: initialData.max_protection_value,
+      protection_type: initialData.nvd_protection_type,
+      protection_percentage: initialData.nvd_protection_type_value,
+      min_protection_variant: initialData.min_variant_id,
+      max_protection_variant: initialData.max_variant_id,
+      expiration: today.setDate(today.getDate() + 3),
+            };
+      // store into localStorage
+      localStorage.setItem('nvdconfig', JSON.stringify(shopConfig));
+
+      return shopConfig;
+          });
+      }
+      if (callback) return callback();
+    };
+
+    const calculateProtection = async (cartTotal, nvdConfig) => {
+
+      let protectionType = nvdConfig.protection_type;
+      let protectionPercentage = nvdConfig.protection_percentage;
+      let protectionId;
+      let protectionPrice;
+      let minPrice = Number(nvdConfig.min_protection_price);
+      let maxPrice = Number(nvdConfig.max_protection_price);
+      let minId = nvdConfig.min_protection_variant;
+      let maxId = nvdConfig.max_protection_variant;
+      let protectionVariants = nvdConfig.protection_variants;
+
+      // TODO: check protection type
+      if (protectionType == '1') {
+        // protection is dynamic
+        let ourProtectionPrice = (cartTotal * protectionPercentage)/100;
+      ourProtectionPrice = ourProtectionPrice.toFixed(2);
+
+      // calculate the protection
+      if (ourProtectionPrice < minPrice) {
+        console.log('Our protection price is less than minimum');
+      protectionPrice = minPrice;
+      protectionId = minId;
+      return {
+        price: protectionPrice,
+      variant_id: protectionId
+          }
+        } else if (ourProtectionPrice > maxPrice) {
+        console.log('Our protection price is greater than maximum');
+      protectionPrice = maxPrice;
+      protectionId = maxId;
+      return {
+        price: protectionPrice,
+      variant_id: protectionId
+          }
+        } else {
+        console.log('calculating protection')
+          protectionPrice = ourProtectionPrice;
+      let priceArray = Object.keys(protectionVariants);
+      let returnedPrice;
+          priceArray.forEach(price => {
+        let priceCalculation = price - ourProtectionPrice;
+      if (priceCalculation < 0.75 && priceCalculation > 0) {
+        protectionPrice = price;
+      protectionId = protectionVariants[price];
+            }
+          });
+      return {
+        price: protectionPrice,
+      variant_id: protectionId
+          }
+        }
+      }
+      else {
+        // protection is static.so hit the api
+        console.log('protection is static');
+      let apiURL = await fetch(`https://app.navidiumapp.com/api/variant-id-checker-api-march6.php?shop_url=${shop}&price=` + cartTotal);
+      let data = apiURL.json();
+      return data;
+      }
+    }
+
+
+    const nvd_init = async () => {
+        let shopCurrency = '{{ shop.money_with_currency_format }}';
+        console.time('nvd_init');
+      localStorage.setItem('nvd_running', true);
+      // TODO: check nvd_config in localStorage
+      let shopConfig = localStorage.getItem('nvdconfig')
+      ? JSON.parse(localStorage.getItem('nvdconfig'))
+      : null;
+      // check if shop config data is available in localStorage
+      if (shopConfig) {
+        console.log('Navidium config avaialable in storage');
+      } else {
+        // if not available, fetch from server and store in localStorage
+        console.log('Navidium config not avaialable in storage. Prefetching now');
+      await prefetch(nvd_init);
+      return;
+      }
+
+      let cartProtectionVariant = localStorage.getItem('cart_protection')
+      ? localStorage.getItem('cart_protection')
+      : null;
+
+      let opted_out = Boolean(JSON.parse(localStorage.getItem('nvd_opted_out')));
+
+      let showWidget = shopConfig
+      ? Boolean(shopConfig.show_widget)
+      : JSON.parse(localStorage.getItem('nvdconfig')).show_widget;
+
+      let success = shopConfig
+      ? Boolean(shopConfig.show_widget)
+      : JSON.parse(localStorage.getItem('nvdconfig')).success;
+      let checked;
+
+      let nvd_variant;
+
+      console.log('in cart protection variant', cartProtectionVariant);
+      // check if widget should be shown and limit did not exceeded
+      if (showWidget == true && success == true) {
+        let apiURL = `https://app.navidiumapp.com/api/variant-id-checker-api-march6.php?shop_url=${shop}&price=`;
+
+      // check if cart has previous navidium or duplicate items
+      let cart = await getCartCallback(checkCart);
+
+      let cartTotal = await cart.total/100;
+
+      let currency = await cart.currency;
+
+      console.log('after exclusion total price is', cartTotal);
+      // now hit the api
+      let getProtection = await calculateProtection(cartTotal, shopConfig);
+
+      let variantFromApi = await getProtection.variant_id;
+      let priceFromApi = await getProtection.price;
+
+
+      console.log('apiJson', getProtection);
+      // now we get the cart total price and time to hit the second api
+      if (cartTotal == 0) {
+        console.log('cart total is zero.No need to add protection');
+      return;
+        } else {
+          // check for opt in status first
+          if (shopConfig.auto_insurance == 1) {
+        console.log('auto insurance is true');
+      checked = true;
+          }
+      if (opted_out == true) {
+        console.log('user has not opted in');
+      checked = false;
+          }
+      if (opted_out == false) {
+        console.log(' use has opted in');
+      checked = true;
+          }
+
+      if (autoInsurance == '0' || opted_out == true) {
+        checked = false;
+          }
+      console.log('widget check status: ', checked);
+      // now check the variant in cart is equal to the variant in api return
+      if (cartProtectionVariant) {
+            if (cartProtectionVariant == variantFromApi) {
+        console.log(
+          '1. cart variant is same as the api variant,stay idle and build widget',
+          cartProtectionVariant,
+          variantFromApi
+        );
+      nvd_variant = cartProtectionVariant;
+      if (document.querySelector('.nvd-mini'))
+                document.querySelectorAll('.nvd-mini').forEach((item) => {
+        item.innerHTML = buildWidget(
+          shopConfig,
+          priceFromApi,
+          nvd_variant,
+          checked ? 'checked' : ''
+        );
+                });
+      checkWidgetView();
+            } else {
+        console.log(
+          'cart variant and api variant is not same.swapping them now'
+        );
+      nvd_variant = variantFromApi;
+      // now remove the previous navidium variant from cart
+      if (cartProtectionVariant) {
+                // now add the new protection to the cart
+                if (checked)
+      console.log('removing old and adding new protection');
+      await removeAndAddProtection(
+      cartProtectionVariant,
+      variantFromApi,
+      false
+      );
+              }
+
+      // now append the snippet
+      if (document.querySelector('.nvd-mini'))
+                document.querySelectorAll('.nvd-mini').forEach((item) => {
+        item.innerHTML = buildWidget(
+          shopConfig,
+          priceFromApi,
+          nvd_variant,
+          checked ? 'checked' : ''
+        );
+                });
+      checkWidgetView();
+            }
+          } else {
+            if (checked) {
+        console.log(
+          'Protection Not available. Adding now.',
+          cartProtectionVariant,
+          variantFromApi
+        );
+      nvd_variant = variantFromApi;
+      await addProtection(Number(variantFromApi), 1, false);
+      if (document.querySelector('.nvd-mini'))
+                document.querySelectorAll('.nvd-mini').forEach((item) => {
+        item.innerHTML = buildWidget(
+          shopConfig,
+          priceFromApi,
+          nvd_variant,
+          checked ? 'checked' : ''
+        );
+                });
+      checkWidgetView();
+            } else {
+        nvd_variant = variantFromApi;
+      console.log('no protection available, just append snippet');
+      if (document.querySelector('.nvd-mini'))
+                document.querySelectorAll('.nvd-mini').forEach((item) => {
+        item.innerHTML = buildWidget(
+          shopConfig,
+          priceFromApi,
+          nvd_variant,
+          checked ? 'checked' : ''
+        );
+                });
+      checkWidgetView();
+            }
+          }
+
+          // now
+        }
+      } else {
+        // when navidium widget is shut off
+        console.log(
+          '%c Navidium Message:widget is shut off or limit reached.Please turn on from your app settings or check you have not exceeded your limit',
+          'color: yellow; background-color: blue; font-size: 12px'
+        );
+      }
+      console.timeEnd('nvd_init');
+      localStorage.setItem('nvd_running', false);
+
+      updateWidgetPrice();
+    };
+
+    // function to get cart data and pass the data to another callback for processing.
+    const getCartCallback = async (callback) => {
+        let cart = await fetch('/cart.js');
+      let cartData = await cart.json();
+
+      if (callback) return callback(cartData);
+
+      return cartData;
+    };
+
+    // function to check cart items
+    const checkCart = async (cartData, callback = null) => {
+        let currency = await cartData.currency;
+      console.log('cart in check cart', cartData);
+      if (cartData.items.length != 0) {
+        let items = cartData.items;
+
+      let total = parseFloat(cartData.total_price);
+
+      let initialTotal = cartData.total_price;
+
+      let nvd_counter_array = [];
+
+      let recheck = false;
+
+      let dupeVariant;
+
+      let counter = items.length;
+
+      let shopConfig = localStorage.getItem('nvdconfig')
+      ? JSON.parse(localStorage.getItem('nvdconfig'))
+      : null;
+
+      let excludedSKUs = shopConfig.product_exclusion;
+      // if no shop config is found wait and call prefetch
+      if (!shopConfig) {
+        await prefetch();
+        }
+
+      console.log('product exclusion', excludedSKUs);
+        let promises = await items.forEach((item) => {
+          // check for duplicate navidium
+          if (item.handle.includes('navidium-shipping-protection')) {
+        nvd_counter_array.push(item.variant_id);
+
+      console.log('protection available in cart');
+
+      localStorage.setItem('cart_protection', item.variant_id);
+
+      total = total - item.final_line_price;
+
+      console.log('nvd1', total);
+            if (item.quantity > 1) {
+        console.log('Found duplicate protection in cart,decreasing now');
+
+      // as cart total is update. we need to call the checkCart function recursively
+      recheck = true;
+      dupeVariant = item.variant_id;
+            } else {
+        console.log('protection duplication test passed');
+            }
+          } else {
+        counter = counter + item.quantity;
+            // TODO: check for the excluded product first
+            excludedSKUs.forEach((sku) => {
+              if (item.sku == sku) {
+        console.log(
+          '%c Navidium Message:Product is excluded',
+          'color: yellow; background-color: blue; font-size: 16px',
+          item.sku,
+          item.final_price
+        );
+      // substract the item price from total
+      total = total - item.final_line_price;
+      console.log('ex1', total);
+              }
+            });
+          }
+        });
+      if (recheck == true) {
+        let mutateCart = adjustProtectionQuantity(dupeVariant, 0, false);
+      console.log('calling checkCart function recursively', mutateCart);
+      getCartCallback(checkCart);
+        }
+        if (nvd_counter_array.length > 1) {
+        console.log(
+          '%cfound more than one variant of navidium protection in cart,removing all now',
+          'color:red'
+        );
+          await nvd_counter_array.forEach((item) => {
+        console.log('removing variant', item);
+      adjustProtectionQuantity(item, 0);
+      localStorage.removeItem('cart_protection');
+      recheck = false;
+          });
+        }
+      if (nvd_counter_array.length == 0) {
+        console.log('No protection available in cart');
+      localStorage.removeItem('cart_protection');
+        }
+      if (nvd_counter_array.length == items.length) {
+        console.log('no items in cart rather than protection');
+          fetch('/cart/clear.js').then((res) => {
+        console.log('cart cleared');
+      location.reload();
+      localStorage.removeItem('cart_protection');
+          });
+        }
+      // if recheck is true and duplicate protection is available call checkCart the function recursively
+
+      return {
+        total: parseFloat(total),
+      currency: currency,
+        };
+      } else {
+        return {
+        total: 0,
+      currency: currency,
+        };
+      }
+    };
+
+    // function to add protection to cart
+    const addProtection = async (variantId, quantity = 1, reload = false) => {
+      const id = parseInt(variantId);
+
+      let cartData;
+
+      var request = {
+        method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      Accept: 'application/json',
+        },
+      body: JSON.stringify({
+        id: id,
+      quantity: quantity,
+        }),
+      };
+
+      cartData = await fetch('/cart/add.js', request);
+      let cartJson = await cartData.json();
+      if (cartJson.id) {
+        console.log(
+          '%c Protection added successfully',
+          'color: white; background-color: green'
+        );
+      updateLiveCart(null);
+      }
+
+      console.dir(cartJson);
+      localStorage.setItem('nvd_opted_out', false);
+      localStorage.setItem('cart_protection', variantId);
+      checkWidgetView();
+      if (reload == true) {
+        location.reload();
+      } else {
+        return cartJson;
+      }
+    };
+
+    //   function to remove protection
+    const removeProtection = async (variantId, reload = false) => {
+      var request = {
+        method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      Accept: 'application/json',
+        },
+      body: JSON.stringify({
+        id: String(variantId),
+      quantity: 0,
+        }),
+      };
+
+      cartData = await fetch('/cart/change.js', request);
+      let cartJson = await cartData.json();
+      localStorage.setItem('nvd_opted_out', true);
+      localStorage.removeItem('cart_protection');
+      if (cartJson.token) {
+        console.log(
+          '%c Protection removed successfully',
+          'color: white; background-color: red'
+        );
+      updateLiveCart(cartJson);
+      }
+
+      checkWidgetView();
+      if (reload == true) {
+        location.reload();
+      } else {
+        return cartJson;
+      }
+    };
+      // function to update protection variant from cart
+      const adjustProtectionQuantity = async (
+      variantId,
+      quantity,
+      reload = false
+    ) => {
+        let cartData;
+
+      var request = {
+        method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      Accept: 'application/json',
+        },
+      body: JSON.stringify({
+        id: String(variantId),
+      quantity: String(quantity),
+        }),
+      };
+
+      cartData = await fetch('/cart/change.js', request);
+
+      let cartJson = await cartData.json();
+
+      console.log(
+      '%cnew cart instance after duplicate protection quantity decrease',
+      'color:yellow',
+      cartJson
+      );
+      console.dir(cartJson);
+      updateLiveCart(cartJson);
+      if (reload == true) {
+        location.reload();
+      } else {
+        return cartJson;
+      }
+    };
+    let updateWidgetPrice = async () => {
+      console.log('updating widget price');
+      let cartData = await fetch('/cart.js').then(res=> res.json());
+      let widget = document.querySelector('#nvd-widget-cart');
+
+      if(widget == null) return;
+
+      let shopCurrency = '{{ shop.money_with_currency_format }}';
+      let items = await cartData.items;
+      items.forEach((item) => {
+        console.log(item);
+        if (item.handle == 'navidium-shipping-protection') {
+          console.log(' updating navidium price')
+          let price = Shopify.formatMoney(item.price, shopCurrency);
+          let priceElem = document.querySelector('.shipping-protection-price');
+          if (priceElem) priceElem.innerHTML = price;
+        }
+      });
+    };
+    // function remove and add protection to cart
+    const removeAndAddProtection = async (remove, add, reload = false) => {
+      const removeRequest = {
+        method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      Accept: 'application/json',
+        },
+      body: JSON.stringify({
+        id: String(remove),
+      quantity: 0,
+        }),
+      };
+
+      const addRequest = {
+        method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;',
+      Accept: 'application/json',
+        },
+      body: JSON.stringify({
+        id: String(add),
+      quantity: 1,
+        }),
+      };
+
+      await fetch('/cart/change.js', removeRequest)
+        .then((res) => res.json())
+        .then((data) => {
+        console.log('removed and now adding');
+
+      fetch('/cart/add.js', addRequest)
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.id) {
+        console.log(
+          '%c Protection swapped successfully',
+          'color: white; background-color: green'
+        );
+      updateLiveCart(null);
+              }
+
+      localStorage.setItem('nvd_opted_out', false);
+      localStorage.setItem('cart_protection', add);
+
+      if (reload) {
+        location.reload();
+              }
+            });
+        });
+    };
+    // widget switch on/off listener function
+    const getShippingProtection = async (variantId, price) => {
+        let checked = document.querySelector('#shippingProtectionCheckBox').checked;
+
+      if (!checked) {
+        console.log('unchecking and removing protection');
+        {%- if template.name != 'cart' -%}
+      await removeProtection(variantId);
+        {%- else -%}
+        await removeProtection(variantId,true);
+        {%- endif -%}
+      } else {
+        console.log('checked and adding protection');
+        {%- if template.name != 'cart' -%}
+      await addProtection(parseInt(variantId), 1);
+        {%- else -%}
+        await addProtection(parseInt(variantId), 1,true);
+        {%- endif -%}
+      }
+    };
+
+    // function to update subtotal and dom cart item's line id
+    const updateLiveCart = async (cartData = null) => {
+        let cart = cartData;
+      if (cart == null) cart = await getCartCallback();
+
+      let shopCurrency = '{{ shop.money_with_currency_format }}';
+      let totalPrice = Shopify.formatMoney(cart.total_price, shopCurrency);
+      let cartItems = cart.items;
+      let totalCount = cart.item_count;
+      let opted_out = Boolean(JSON.parse(localStorage.getItem('nvd_opted_out')));
+
+      // change the cart item class name here.
+      let lineAttribute = 'data-line';
+      let quantityPlus = '[data-action="increase-quantity"]';
+      let quantityMinus = '[data-action="decrease-quantity"]';
+      let removeItem = '.line-item__quantity-remove';
+      let totalElem = document.querySelectorAll('.drawer__footer .ajaxcart__price, #revy-cart-subtotal-price');
+      let cartCountElem = document.querySelectorAll('.title-ajax__cart .text-bold');
+      let cartItemNodes = document.querySelectorAll('.ajaxcart__row');
+      let cartItemsList = Array.from(cartItemNodes);
+
+      //  if not opted out show one less in count
+      if (!opted_out) current_count = totalCount - 1;
+      if (opted_out) current_count = totalCount;
+      if (cart.item_count == 0) current_count = 0;
+      console.log('current and cart count', current_count, totalCount);
+      if (totalElem) totalElem.forEach((elem) => (elem.innerHTML = totalPrice));
+      if (cartCountElem)
+        cartCountElem.forEach((elem) => (elem.innerHTML = `(${current_count} items)`));
+      await updateCartLine(
+      lineAttribute,
+      cartItemsList,
+      cartItems,
+      quantityPlus,
+      quantityMinus,
+      removeItem
+      );
+    };
+
+      // function to update the line index in dom cart line items
+      let updateCartLine = async (
+      lineAttribute,
+      cartItemsList,
+      cartItems,
+      qtyPlus,
+      qtyMinus,
+      rmvItem
+    ) => {
+        console.log(cartItemsList, lineAttribute);
+      // for every line item in cart dom check with the cart items.
+      await cartItemsList.forEach((item) => {
+
+        console.log(item.innerHTML.toString().includes('/products/navidium-shipping-protection'))
+        if(item.innerHTML.toString().includes('/products/navidium-shipping-protection') == true){
+          item.style.display = 'none !important'
+          item.remove();
+        }
+        cartItems.forEach((cartItem, index) => {
+          if (item.innerHTML.toString().includes(cartItem.url)) {
+
+            console.log(item.querySelector(`[${lineAttribute}]`));
+            let lineItem = item.querySelectorAll(`[${lineAttribute}]`);
+            let removeItem = item.querySelectorAll(rmvItem);
+            let quantityPlus = item.querySelectorAll(qtyPlus);
+            let quantityMinus = item.querySelectorAll(qtyMinus);
+            if (lineItem)
+              lineItem.forEach((item) =>
+                item.setAttribute(lineAttribute, index + 1)
+              );
+            if (quantityPlus)
+              quantityPlus.forEach((item) =>
+                item.setAttribute(
+                  'data-href',
+                  `/cart/change?quantity=${cartItem.quantity + 1}&line=${index + 1
+                  }`
+                )
+              );
+            if (quantityMinus)
+              quantityMinus.forEach((item) =>
+                item.setAttribute(
+                  'data-href',
+                  `/cart/change?quantity=${cartItem.quantity - 1}&line=${index + 1
+                  }`
+                )
+              );
+            if (removeItem)
+              removeItem.forEach((item) =>
+                item.setAttribute(
+                  'href',
+                  `/cart/change?line=${index + 1}&quantity=0`
+                )
+              );
+            console.log('line id updated');
+          }
+        });
+      });
+    };
+    // opt in message toggle function
+    const checkWidgetView = () => {
+        let optedOut = localStorage.getItem('nvd_opted_out');
+      let selected = document.querySelector('.nvd-selected');
+      let deselected = document.querySelector('.nvd-dis-selected');
+      if (optedOut == 'true') {
+        if (selected) selected.style.display = 'none';
+      if (deselected) deselected.style.display = 'block';
+      } else {
+        if (selected) selected.style.display = 'block';
+      if (deselected) deselected.style.display = 'none';
+      }
+    };
+
+    // function that will track the widget real time
+
+    const trackWidget = () => {
+        let nvd_running = localStorage.getItem('nvd_running');
+
+      let startTracking = setInterval(() => {
+        let nvdContainer = document.querySelector('.nvd-mini');
+      let hasWidget;
+      if (nvdContainer) hasWidget = nvdContainer.innerHTML.length;
+
+      if (hasWidget < 1) {
+          if (nvd_running == 'false') {
+        console.log('widget not available, initiating widget');
+      setTimeout(nvd_init, 0);
+          }
+        }
+      }, 1000);
+    };
+
+    // function to build the widget
+    let buildWidget = (shopConfig, priceFromApi, nvd_variant, checked) => {
+        let shopCurrency = '{{ shop.money_with_currency_format }}';
+        let nvd_name = shopConfig.nvd_name;
+      let nvd_subtitle = shopConfig.nvd_subtitle
+      let nvd_description = shopConfig.nvd_description
+      let nvd_message = shopConfig.nvd_message
+      let protection_price = priceFromApi
+      let protected_variant = nvd_variant
+      let protection_checkbox = checked ? 'checked' : ''
+      let selectedStyle = protection_checkbox
+      ? "'display: block;'"
+      : "'display: none;';";
+      let diselectedStyle = protection_checkbox
+      ? "'display: none;';"
+      : "'display: block;'";
+      var snippet = `<div class="appearance-right-previw" id="nvd-widget-cart">
+        <div class="d-flexCstm">
+          <div class="flex-shrink-0Cstm">
+            <div class="form-checkCstm form-switchCstm">
+              <input class="forms-check-inputCstm" type="checkbox" id="shippingProtectionCheckBox"
+                onclick="getShippingProtection('${protected_variant}','${protection_price}')" ${protection_checkbox} data-protected-variant="${protected_variant}">
+                <div class="img">
+                  <img class="navidium-shipping-icon" width="auto" height="auto" src="{{ " navidium-shipping-icon.png" | asset_url }}" alt="Navidium icon">
+                  <svg width="20" height="26" viewBox="0 0 20 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M9.8056 0.867554L0.00976562 4.2023C0.218188 8.16232 -0.177814 14.415 0.635031 17.1245C1.32282 19.4171 7.16558 23.8634 9.8056 25.6698C11.9593 23.9329 17.3442 20.4317 18.3509 18.1666C20.0183 14.415 19.8793 8.09285 19.6014 4.2023L9.8056 0.867554Z"
+                      fill="#6D7175"></path>
+                    <path d="M5.01172 13.1644L7.92963 16.7076L14.3907 10.0381" stroke="white" stroke-width="1.66738"
+                      stroke-linecap="round" stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+            </div>
+          </div>
+          <div class="flex-grow-1Cstm ms-3Cstm">
+            <h4>${nvd_name}
+              <button type="button" class="btnCstm tooltipCstm">
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M7.5 0C3.36433 0 0 3.36433 0 7.5C0 11.6357 3.36433 15 7.5 15C11.6357 15 15 11.6357 15 7.5C15 3.36433 11.6357 0 7.5 0ZM7.5 11.875C7.15496 11.875 6.87504 11.595 6.87504 11.25C6.87504 10.905 7.15496 10.625 7.5 10.625C7.84504 10.625 8.12496 10.905 8.12496 11.25C8.12496 11.595 7.84504 11.875 7.5 11.875ZM8.48934 7.90123C8.26813 8.00308 8.12496 8.22624 8.12496 8.46943V8.75004C8.12496 9.09496 7.84561 9.375 7.5 9.375C7.15439 9.375 6.87504 9.09496 6.87504 8.75004V8.46943C6.87504 7.73998 7.30373 7.0713 7.96566 6.76563C8.60252 6.47255 9.06246 5.69435 9.06246 5.31246C9.06246 4.45129 8.36185 3.75 7.5 3.75C6.63815 3.75 5.93754 4.45129 5.93754 5.31246C5.93754 5.6575 5.65807 5.93754 5.31246 5.93754C4.96685 5.93754 4.6875 5.6575 4.6875 5.31246C4.6875 3.7619 5.94933 2.49996 7.5 2.49996C9.05067 2.49996 10.3125 3.7619 10.3125 5.31246C10.3125 6.15692 9.57996 7.39815 8.48934 7.90123Z"
+                    fill="#212B36"></path>
+                </svg>
+                <span class="toolltiptextCstm">{{ shop.metafields.navidium.nvd_description }}</span>
+              </button>
+            </h4>
+            <p>${nvd_subtitle}
+              <strong class="shipping-protection-price">
+                ${Shopify.formatMoney(protection_price * 100, shopCurrency)}
+              </strong>
+            </p>
+            <p class="nvd-selected">${nvd_description}</p>
+            <p class="nvd-dis-selected" style="display:none">${nvd_message}</p>
+          </div>
+        </div>
+      </div>`;
+      return snippet;
+    };
+
+
+      window.onload = function () {
+        prefetch();
+  //     eventListeners();
+      {% if cart.total_price > 0 %}
+      setTimeout(nvd_init, 0);
+      // use this only at bad situation when you can't keep track of the widget in dom.It may duplicate the protection in cart;
+      //   setTimeout(trackWidget, 6000);
+      updateLiveCart(null);
+      {% endif %}
+      window.addEventListener(
+          'change',
+          (ev) => {
+            const navidiumTriggers = Array.from(
+              document.querySelectorAll('.cart__product-qty, .btn, .cart__update, .add-to-cart')
+            );
+            const elm = ev.target;
+            console.log(ev.target,navidiumTriggers,navidiumTriggers.includes(elm));
+            if (navidiumTriggers.includes(elm)) {
+              console.log('navidium triggered');
+              console.log('navidium triggered');
+              setTimeout(()=>{
+              nvd_init().then(()=> updateLiveCart())
+              }, 700);
+            }
+          },false
+        );
+         window.addEventListener(
+          'click',
+          (ev) => {
+            const navidiumTriggers = Array.from(
+              document.querySelectorAll('.js-qty__adjust,.js-qty__adjust *,.add-to-cart, .add-to-cart *')
+            );
+            const elm = ev.target;
+            console.log(ev.target,navidiumTriggers,navidiumTriggers.includes(elm));
+            if (navidiumTriggers.includes(elm)) {
+              console.log('navidium triggered');
+              console.log('navidium triggered');
+              setTimeout(()=>{
+              nvd_init().then(()=> updateLiveCart())
+              }, 700);
+            }
+          },false
+        );
+    }
+</script>

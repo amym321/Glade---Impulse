@@ -1,0 +1,353 @@
+
+<div class="wiper-info-wrap">
+  <div class="wiper-info-wrap">
+    <div class="wiper-info">
+      <div class="wiper-info-img">
+        <img src="{{section.settings.image | img_url:'master'}}">
+
+
+        {%-for block in section.blocks-%}
+        <div class="wiper-text" data-achor="{{ forloop.index }}">
+          <div class="wiper-block block--{{block.id}}">
+            <p>{{block.settings.image_content }}</p>
+            
+            <div class="wiper-info-text" style="top:{{block.settings.top}}%; left:{{block.settings.left}}%">
+              <p>{{ block.settings.title}}</p>
+            </div>
+          </div>
+        </div>
+        {%- endfor-%}
+      </div>
+    </div>
+  </div>	
+  
+   <div class="accordion-list text-left wiper-info-accordion">
+     {%-for block in section.blocks-%}
+     <div class="accordion-item {% if forloop.first %}active{% endif %}" data-step="{{ forloop.index }}">
+       <h3>{{ block.settings.title  }}
+       </h3>
+       
+     </div>
+     {%- endfor-%}
+   </div>
+</div>
+
+{%- style -%}
+.wiper-info-wrap {
+    max-width: 1264px;
+    margin: 0 auto;
+    padding: 80px 15px;
+padding-top:10px;
+padding-bottom:40px;
+}
+
+.wiper-info {
+    position: relative;
+cursor:pointer;
+}
+
+.wiper-info-img {
+    position: relative;
+}
+
+.wiper-info-img img {
+    width: 100%;
+}
+
+.wiper-info svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+}
+@media screen and (min-width: 768px) {
+.wiper-info svg {
+z-index:1;
+}
+}
+
+.wiper-info .line {
+    fill: none;
+    stroke: #18c2ff;
+    stroke-width: 1px;
+    stroke-dasharray: 4px;
+}
+@media screen and (min-width: 768px) {
+.wiper-info-text, .wiper-info-text p {
+z-index: 1;
+cursor:crosshair;
+}
+.wiper-info-text p:hover {
+font-weight:bold;
+}
+}
+@media screen and (max-width: 767px) {
+    .wiper-info .line {
+        display: none;
+    }
+    .wiper-info .point {
+        opacity: 1;
+    }
+    .wiper-info .point {
+        opacity: 1;
+    }
+    [data-achor="1"] {
+        position: absolute;
+        top: 28%;
+        width: 130px;
+        height: 60px;
+        left: 14%;
+    }
+    [data-achor="2"] {
+        position: absolute;
+        top: 2%;
+        width: 70px;
+        height: 60px;
+        left: 47%;
+    }
+    [data-achor="3"] {
+        position: absolute;
+        top: 54%;
+        width: 70px;
+        height: 60px;
+        left: 67%;
+    }
+    [data-achor="4"] {
+        position: absolute;
+        top: 41%;
+        width: 70px;
+        height: 60px;
+        left: 41%;
+    }
+    [data-achor="5"] {
+        position: absolute;
+        top: 70%;
+        width: 70px;
+        height: 60px;
+        left: 25%;
+    }
+  [data-achor="6"] {
+    position: absolute;
+    top: 41%;
+    width: 70px;
+    height: 60px;
+    left: 5%;
+    z-index: 1;
+}
+}
+
+
+.wiper-info .point {
+}
+.wiper-info .point.active {
+    opacity: 1;
+}
+
+.wiper-info .point-center {
+    stroke: white;
+    stroke-width: 8px;
+    stroke-linecap: round;
+}
+
+.wiper-info .point-inner {
+    fill: #fff;
+    stroke: #18c2ff;
+    stroke-width: 10px;
+    stroke-linecap: round;
+}
+
+.wiper-info .point-middle {
+    stroke: rgba(24, 194, 255, .4);
+    stroke-width: 20px;
+    stroke-linecap: round;
+}
+
+.wiper-info .point-outer {
+    stroke: rgba(24, 194, 255, .4);
+    stroke-width: 30px;
+    stroke-linecap: round;
+}
+
+.wiper-info .point-end {
+    stroke: #18c2ff;
+    stroke-width: 6px;
+    stroke-linecap: round;
+}
+
+@media screen and (max-width: 767px) {
+    .wiper-info .point-end {
+        display: none;
+    }
+}
+
+.wiper-info-text {
+    position: absolute;
+    text-align: left;
+    max-width: 22rem;
+}
+
+@media screen and (max-width: 767px) {
+    .wiper-info-text {
+        display: none;
+    }
+}
+
+.wiper-info-text p {
+    margin: 0.5rem 0;
+}
+
+.wiper-info-accordion {
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+    .wiper-info-accordion {
+        display: block;
+        margin-top: 20px;
+    }
+    .wiper-info-wrap {
+        padding: 0 15px;
+    }
+}
+
+.accordion-item h3 {
+    font-size: 16px;
+    padding-right: 50px;
+    position: relative;
+    line-height: 24px;
+    cursor: pointer;
+}
+
+.accordion-item h3 svg {
+    transform: rotate(180deg);
+    transition: transform .5s ease;
+    width: 1.5rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.accordion-item.active h3 svg {
+    transform: rotate(0deg);
+}
+
+.accordion-content {
+    display: none;
+}
+
+.accordion-item.active .accordion-content {
+    display: block;
+}
+
+.accordion-item {
+    margin-bottom: 20px;
+}
+@media screen and (min-width: 768px) {
+.line-activate
+{
+	stroke-dasharray:2300;
+	stroke-dashoffset:2300;
+	animation: dash 5s linear forwards infinite;
+}
+}
+
+@media screen and (max-width: 767px) {
+.accordion-item  {
+transition: transform 2s opacity;
+opacity:0;
+
+}
+.accordion-item.active {
+opacity:1;
+}
+.accordion-list {padding-top: 40px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.accordion-item {
+   display: none;
+}
+    .accordion-item.active {
+        display: block;
+    }
+}
+
+.activate{ 
+font-weight:bold;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+{%- endstyle -%}
+
+{% schema %}
+  {
+    "name": "Tooltip",
+    "settings": [
+        {
+          "type":"image_picker",
+          "id":"image",
+          "label":"Product image"
+        }
+      ],
+"blocks": [
+    {
+      "type": "Tooltip",
+      "name": "Tooltip",
+      "settings": [
+        {
+          "type": "html",
+          "id": "image_content",
+          "label": "Tooltip HTML content",
+          "default": "I am a tooltip, I provide additional explanatory content and showcase product features."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Heading"
+        },
+        {
+          "type": "html",
+          "id": "content",
+          "label": "Heading content",
+          "default": "I am a tooltip, I provide additional explanatory content and showcase product features."
+        },
+        {
+          "type": "range",
+          "id": "top",
+          "min": -26,
+          "max": 100,
+          "step": 2,
+          "unit": "%",
+          "label": "Top position",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Left position",
+          "default": 50
+        }
+      ]
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

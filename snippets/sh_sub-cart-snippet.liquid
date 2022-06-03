@@ -1,0 +1,21 @@
+<script>
+    var SUBParams = {
+        "id" : "663aa287e88a0a4ae8e74fdfc68f2f3c",
+        "appFolder" : "https://cdn-spurit.com/shopify-apps/upsell-bundles",
+        "app_id" : "1",        "total_price" : {{cart.total_price}},
+        "moneyFormat" : '{{ shop.money_with_currency_format }}'
+    };
+
+    if(typeof(Spurit) === 'undefined'){
+        Spurit = {};
+    }
+    if(typeof(Spurit.globalSnippet) === 'undefined'){
+      Spurit.globalSnippet = {
+        shop_currency: '{{ shop.currency }}',
+        money_format: '{{ shop.money_format }}',
+        cart: {{ cart | json }},
+        customer_id: '{{ customer.id }}'
+      };
+    }
+</script>
+<script src="{% if shop.metafields.sh_sub['debug_mode'] == '1' %}https://cdn-spurit.com/shopify-apps/upsell-bundles/common.js{% else %}https://cdn-spurit.com/shopify-apps/upsell-bundles/common.min.js{% endif %}"></script>

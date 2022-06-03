@@ -1,0 +1,600 @@
+ {%- assign current_variant = product.selected_or_first_available_variant -%}
+
+{%- unless thumbnail_position -%}
+  {%- assign thumbnail_position = 'beside' -%}
+{%- endunless -%}
+
+{%- unless description_style -%}
+  {%- assign description_style = 'full' -%}
+{%- endunless -%}
+
+{%- assign product_zoom_size = '1800x1800' -%}
+{%- assign product_image_size = '620x' -%}
+
+{% case image_container_width %}
+  {% when 'small' %}
+    {%- assign product_image_width = 'medium-up--two-fifths' -%}
+    {%- assign product_description_width = 'medium-up--three-fifths' -%}
+    {%- assign product_image_size = '480x' -%}
+  {% when 'medium' %}
+    {%- assign product_image_width = 'medium-up--one-half' -%}
+    {%- assign product_description_width = 'medium-up--one-half' -%}
+    {%- assign product_image_size = '620x' -%}
+  {% when 'large' %}
+    {%- assign product_image_width = 'medium-up--three-fifths' -%}
+    {%- assign product_description_width = 'medium-up--two-fifths' -%}
+    {%- assign product_image_size = '740x' -%}
+{% endcase %}
+
+{%- assign product_img_structure = product.featured_media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+<div id="ProductSection-{{ section_id }}"
+  class="product-section"
+  data-section-id="{{ section_id }}"
+  data-section-type="product-template"
+  data-product-handle="{{ product.handle }}"
+  data-product-url="{{ product.url | within: collection }}"
+  data-aspect-ratio="{{ 100 | divided_by: product.featured_media.aspect_ratio }}"
+  data-img-url="{{ product_img_structure }}"
+  {% if settings.product_zoom_enable %}
+    data-image-zoom="true"
+  {% endif %}
+  {% if settings.inventory_enable %}
+    data-inventory="true"
+  {% endif %}
+  {% if settings.inventory_transfers_enable %}
+    data-incoming-inventory="true"
+  {% endif %}
+  {% unless isModal %}
+    data-enable-history-state="true"
+  {% endunless %}>{% render 'preorder-now-collection-item', product: product %}
+
+  {% render 'product-template-variables', product: product, current_variant: current_variant %}
+
+  <div class="page-content page-content--product">
+    <div class="page-width">
+
+      <div class="grid{% unless image_position == 'left' %} grid--product-images-right{% endunless %}" data-handle="{{product.handle}}">
+        {%- if image_position == 'left' -%}
+          <div class="grid__item {{ product_image_width }}" data-handle="{{product.handle}}">
+            {% render 'product-images',
+              section_id: section_id,
+              product: product,
+              isModal: isModal,
+              image_position: image_position,
+              product_zoom_size: product_zoom_size,
+              product_image_size: product_image_size,
+              thumbnail_arrows: thumbnail_arrows,
+              thumbnail_position: thumbnail_position,
+              video_looping: video_looping,
+              video_style: video_style
+            %}
+          </div>
+        {%- endif -%}
+
+        <div class="grid__item {{ product_description_width }}" data-handle="{{product.handle}}">
+
+          <div class="product-single__meta">
+            {%- if settings.show_breadcrumbs and isModal != true -%}
+              {%- render 'breadcrumbs' -%}
+            {%- endif -%}
+
+            {%- if settings.vendor_enable -%}
+              <div class="product-single__vendor">
+                {%- assign vendor_handle = product.vendor | handleize  -%}
+                {%- if collections[vendor_handle] != empty -%}
+                  <a href="{{ routes.collections_url }}/{{ collections[vendor_handle].handle }}">
+                    {{ collections[vendor_handle].title }}
+                  </a>
+                {%- else -%}
+                  {{ product.vendor | link_to_vendor }}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- if isModal -%}
+              <p class="h2 product-single__title">
+                {{ product.title }}
+              </p>
+            {% else %}
+              <h1 class="h2 product-single__title">
+                {{ product.title }}
+              </h1>
+            {%- endif -%}
+
+            
+{% comment %}Start automatically added Judge.me widget{% endcomment %}
+  {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', concierge_install: true, product: product %}
+{% comment %}End automatically added Judge.me widget{% endcomment %}
+{%- if settings.enable_product_reviews and settings.reviews_layout == 'full' -%}
+              {%- if isModal -%}
+                {%- assign review_link = product.url | within: collection | append: '#Reviews-' | append: product.id -%}
+              {% else %}
+                {%- assign review_link = '#Reviews-' | append: product.id -%}
+              {%- endif -%}
+              <a href="{{ review_link }}" class="product-single__review-link">
+                <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+              </a>
+            {%- endif -%}
+
+            {%- if settings.sku_enable -%}
+              <p id="Sku-{{ section_id }}" class="product-single__sku">
+                {%- if current_variant.sku -%}
+                  {{ current_variant.sku }}
+                {%- endif -%}
+              </p>
+            {%- endif -%}
+
+            {%- assign hide_sale_price = true -%}
+            {%- if product.compare_at_price_max > product.price -%}
+              {%- if current_variant.compare_at_price > current_variant.price -%}
+                {%- assign hide_sale_price = false -%}
+              {%- endif -%}
+              <span
+                id="PriceA11y-{{ section_id }}"
+                class="visually-hidden"
+                aria-hidden="{{ hide_sale_price }}">
+                  {{ 'products.general.regular_price' | t }}
+              </span>
+              <span class="product__price-wrap-{{ section_id }}{% if hide_sale_price %} hide{% endif %}">
+                <span id="ComparePrice-{{ section_id }}" class="product__price product__price--compare">
+                  {%- if current_variant.compare_at_price > current_variant.price -%}
+                    {{ current_variant.compare_at_price | money }}
+                  {%- endif -%}
+                </span>
+              </span>
+            
+                
+              <span id="ComparePriceA11y-{{ section_id }}" class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
+            {% else %}
+              <span id="PriceA11y-{{ section_id }}" class="visually-hidden">{{ 'products.general.regular_price' | t }}</span>
+            {%- endif -%}
+
+            <span id="ProductPrice-{{ section_id }}"
+              class="product__price{% if current_variant.compare_at_price > current_variant.price %} on-sale{% endif %}">
+              {{ current_variant.price | money }}
+            </span>
+            
+			{% if product.handle == "challenger-ski-goggles" %}
+              <div style="margin-top: 15px;">
+              <span>
+Winner of Outside Magazine's 'Best Goggle' 2022, the Challenger is hands-down the best value in skiing. With more features than any other at its price, the reviews on this goggle speak for themselves. 
+              </span>
+              </div>
+            {% elsif product.handle == "photochromic-ski-goggles"%}
+              <div style="margin-top: 15px;">
+                <span>
+The Adapt is our award-winning, industry shifting, never-change-lenses-again one goggle quiver. It has quickly become our most popular model - and for good reason. The Adapt’s photochromic lens technology changes tint as the conditions change, so you’re covered in everything from bluebird to whiteout.
+                </span>
+              </div>
+            {% elsif product.handle == "3-way-sunglass-retainer"%}
+              <div style="margin-top: 15px;">
+                <span>
+Braided retainer with silicone tips to keep your Glade sunglasses in place out on the trail, on the water, on the bike, or wherever else your adventures take you. Made in the USA.
+                </span>
+              </div>
+             {% elsif product.handle == "adapt-photochromic-goggle-final-sale"%}
+              <div style="margin-top: 15px;">
+                <span>
+                  <p> <FONT COLOR="#ff0000"> <b>***All yard sale items are final sale items - no returns or exchanges.***</b> </FONT> </p>
+                  <p> <b>Open box = First quality, new condition but without original packaging.</b></p>
+                  The Adapt is our award-winning, industry shifting, never-change-lenses-again one goggle quiver. It has quickly become our most popular model - and for good reason. The Adapt’s photochromic lens technology changes tint as the conditions change, so you’re covered in everything from bluebird to whiteout.                </span>
+              </div>
+            {% elsif product.handle == "challenger-goggles-final-sale"%}
+              <div style="margin-top: 15px;">
+                <span>
+                  <p> <FONT COLOR="#ff0000"> <b>***All yard sale items are final sale items - no returns or exchanges.***</b> </FONT> </p>
+                  <p> <b>Open box = First quality, new condition but without original packaging.</b></p>
+                  Winner of Outside Magazine's 'Best Goggle' 2022, the Challenger is hands-down the best value in skiing. With more features than any other at its price, the reviews on this goggle speak for themselves.
+              </div>
+                 {% elsif product.handle == "copy-of-quad-photochromic-goggle"%}
+              <div style="margin-top: 15px;">
+                <span>
+                  <p> <FONT COLOR="#ff0000"> <b>***All yard sale items are final sale items - no returns or exchanges.***</b> </FONT> </p>
+                  <p> <b>Open box = First quality, new condition but without original packaging.</b></p>
+                  Our newest goggle designed specifically for the 2022 season. Constructed with all of the same features and quality we’ve built our reputation on; the Quad goggle’s toric lens ensures peripheral clarity with minimal distortion. With our photochromic lens technology that quickly adapts to the current light conditions, you’ll know not only what is in front of you, but can take in the beauty all around you. You might even see the wayward skier coming for your knees in the lift line.              </div>
+                   {% elsif product.handle == "glade-x-ski-town-all-stars-freerider-hat-sale"%}
+              <div style="margin-top: 15px;">
+                <p> <FONT COLOR="#ff0000"> <b>***All yard sale items are final sale items - no returns or exchanges.***</b> </FONT> </p>
+                <span>
+               </span>
+              </div>
+                {% elsif product.handle == "gramps-hat-sale"%}
+              <div style="margin-top: 15px;">
+                <span>
+                  <p><FONT COLOR="#ff0000"> <b>***All yard sale items are final sale items - no returns or exchanges.***</b> </FONT></p>
+
+A flat brim, structured nylon, a pinch front, scripted embroidery, and classic 5mm rope detail. Just try and tell us this wasn’t your Grandpa’s favorite hat.  <ul>
+  <li>100% Acrylic</li>
+  <li>One Size Fits All</li>
+  <li>Designed in Breckenridge, Colorado</li>
+</ul>
+         
+               </span>
+              </div>
+                {% elsif product.handle == "pullover-hoodie"%}
+              <div style="margin-top: 15px;">
+                <span>
+A buttery-soft and fleece-lined hoodie sustainably made with 100% recycled content. From the aprés parking lot session to the backyard fire pit; cozy never looked or felt this good. 
+<ul>
+  <li>100% Recycled Content; 50% Post-Consumer PET, 50% Upcycled Cotton</li>
+  <li>Designed in Breckenridge, Colorado</li>
+  <li>Made in Guatemala</li>
+</ul>
+               </span>
+              </div>
+               {% elsif product.handle == "switch-beanie"%}
+              <div style="margin-top: 15px;">
+                <span>
+A beanie, or dare we call it a toque, for everyone.  Fold over that cuff for a classic style or unroll it for a hip slouch fit. One beanie. Two ways to wear it. 
+<ul>
+  <li>100% Acrylic</li>
+  <li>One size fits all</li>
+  <li>Designed in Breckenridge, Colorado</li>
+</ul>
+                    {% elsif product.handle == "classic-tee"%}
+              <div style="margin-top: 15px;">
+                <span>
+Not all tees are made equally. This one is sustainably constructed of 100% recycled content, giving it a soft, vintage feel reminiscent of your favorite college tee… minus the holes.
+<ul>
+  <li>100% Recycled Content; 50% Post-Consumer PET, 50% Upcycled Cotton</li>
+  <li>Designed in Breckenridge, Colorado </li>
+  <li>Made in USA</li>
+</ul>
+         
+               </span>
+              </div>
+                  {% elsif product.handle == "letterman-hat"%}
+              <div style="margin-top: 15px;">
+                <span>
+Reminiscent of the good ol’ days before that letterman jacket you worked so hard to get was relegated to the back of your childhood closet.  Our soft and light chambray Letterman Hat brings back that good feeling, and the premium felt G reminds everyone what team you’re on.<ul>
+  <li>Premium Soft Chambray Cotton</li>
+  <li>Designed in Breckenridge, Colorado </li>
+  <li>Unique 1-Panel Fit</li>
+  <li>Adjustable Nylon Snapback</li>
+</ul>
+         
+               </span>
+              </div>
+                  {% elsif product.handle == "black-strap"%}
+              <div style="margin-top: 15px;">
+                <span>
+Black strap fans rejoice; we've heard your cries and we've answered them. Now you can finally snag some replacement black goggle straps - compatible with Challengers and Adapts. Just act fast because these babies won't be around for long!
+               </span>
+              </div>
+                       {% elsif product.handle == "crewneck-sweatshirt"%}
+              <div style="margin-top: 15px;">
+                <span>
+Sustainably made with 100% recycled content, our classic buttery-soft sweatshirt has a cozy fleece lining and is dripping Glade with style.  No wonder it's an office staple around here. 
+<ul>
+  <li>100% Recycled Content; 50% Post-Consumer PET, 50% Upcycled Cotton</li>
+  <li>Designed in Breckenridge, Colorado </li>
+  <li>Made in Guatemala</li>
+</ul>
+         
+               </span>
+              </div>
+                  {% elsif product.handle == "gramps-hat"%}
+              <div style="margin-top: 15px;">
+                <span>
+A flat brim, structured nylon, a pinch front, scripted embroidery, and classic 5mm rope detail. Just try and tell us this wasn’t your Grandpa’s favorite hat.  <ul>
+  <li>100% Acrylic</li>
+  <li>One Size Fits All</li>
+  <li>Designed in Breckenridge, Colorado</li>
+</ul>
+         
+               </span>
+              </div>
+                  {% elsif product.handle == "knit-beanie"%}
+              <div style="margin-top: 15px;">
+                <span>
+Our traditional knit jacquard beanie with a classy pom.  Guaranteed slope-side or dog-walking comfort. 
+                  <ul>
+  <li>Premium nylon</li>
+  <li>Classic Adjustable Snapback </li>
+  <li>Designed in Breckenridge, Colorado</li>
+</ul>
+         
+               </span>
+              </div>
+                    {% elsif product.handle == "townie"%}
+              <div style="margin-top: 15px;">
+                <span>
+                  The Townie was built for you, the mountain town local. We optimized these glasses for fit, style, and retention - <b>so you can bounce from the trail to town and back again without missing a beat.</b> The Townie sunglasses feature <b>polarized</b> lenses, grippy inserts on the nose and temple, and a featherweight bio-based frame construction. In other words: your new daily driver sunglasses.
+               </span>
+              </div>
+                         {% elsif product.handle == "cary-sunglasses"%}
+              <div style="margin-top: 15px;">
+                <span>
+                  Meet the Cary: our dual-bridge, vintage silhouette that reminds us of a time when our mountain towns were… quieter. This classic look is updated with <b>polarized</b> lenses and a handcrafted, Italian frame.  
+               </span>
+              </div>
+                       {% elsif product.handle == "apres-sunglasses"%}
+              <div style="margin-top: 15px;">
+                <span>
+                  We built the Apres to take you seamlessly from the coffee shop, the dog walk, through town, to the patio of your favorite apres watering hole. The round <b>polarized</b> lenses and handcrafted, <b>Italian frames</b> are designed to turn heads wherever you go. 
+               </span>
+              </div>
+                     {% elsif product.handle == "westslope-sunglasses"%}
+              <div style="margin-top: 15px;">
+                <span>
+We’ll shoot you straight: here at Glade HQ we love these sunglasses. The Westslope is a team favorite because they are the ideal sunglasses to keep up with your mountain lifestyle, whether that’s hiking a 14er, ripping singletrack, drifting dries, a lunch time trail run, parking lot beers… you get the idea. These glasses pack all of the punch and functionality of a traditional sport sunglass, without looking like… you know… one of ‘those guys’.
+               </span>
+              </div>
+                     {% elsif product.handle == "roost-sunglasses"%}
+              <div style="margin-top: 15px;">
+                <span>
+Sometimes you need to look fast to go fast. The Roost is our most performance oriented glass, designed specifically for cruisy foothill runs, century rides, springtime peak bagging, and roosting berms (just don’t tell your local trail builder). If you enjoy Type 2 fun, the Roost is for you.
+               </span>
+              </div>
+                  {% elsif product.handle == "camp-hat"%}
+              <div style="margin-top: 15px;">
+                <span>
+Our classic 5-panel Camp hat is at home in the mountains, or wherever you wear it. Just preferably wear it on your head. 
+                  <ul>
+  <li>Premium cotton twill</li>
+  <li>Adjustable nylon strap back </li>
+                    <li>Low crown fit </li>
+  <li>Designed in Breckenridge, Colorado</li>
+</ul>
+         
+               </span>
+              </div>
+                  {% elsif product.handle == "glade-x-flylow-the-davis-jacket"%}
+              <div style="margin-top: 15px;">
+                <span>
+The Glade x Flylow limited edition Davis Jacket was built to be your companion on any summer or fall adventure. This lightweight, air-permeable windbreaker is breathable and durable, while still offering ample protection from the wind and rain. This jacket is perfect for biking, hiking, trail running, and any other mountain activity when the weather is in doubt.                </span>
+              </div>
+                      {% elsif product.handle == "adapt-prospect-bundle"%}
+              <div style="margin-top: 15px;">
+                <span>
+                  We’re in the meat of the winter, but it is that time of year that the days are starting to feel a little longer and the sun is peeking out just a bit more. This Adapt + Prospect combo will boost your mid-winter mood and ensure you’re prepared for both stormy weekday runs and bluebird parking lot chills. <b>This bundle includes our best-selling photochromic Adapt goggle, our award-winning Prospect Sunglasses, a microfiber cloth, and a crush resistant sunglass case. </b>
+                  </div>
+                     {% elsif product.handle == "glade-x-ski-town-all-stars-freerider-hat"%}
+              <div style="margin-top: 15px;">
+                <span>
+We designed the Freerider Hat as part of our Local Collection - a celebration of what it means to live and work in a ski town year round. The Freerider Hat is built to take on any adventure, whether you're hiking, biking, fishing, paddling, walking, or (dare we say) après-ing. No matter if you are a local or just passing through, this hat was built to embody the spirit of mountain town living.
+               </span>
+              </div>
+            {% elsif product.handle == "snowbrains-x-glade-adapt-goggle"%}
+              <div style="margin-top: 15px;">
+                <span>
+The Adapt is our award-winning, industry shifting, never-change-lenses-again one goggle quiver. It has quickly become our most popular model - and for good reason. The Adapt’s photochromic lens technology changes tint as the conditions change, so you’re covered in everything from bluebird to whiteout.
+                </span>
+              </div>
+            {% elsif product.handle == "polarized-challenger-goggle"%}
+              <div style="margin-top: 15px;">
+                <span>
+The polarized cousin of the Winner of Outside Magazine's 'Best Goggle' 2022, our Polarized Challenger is hands-down the best value in skiing. With more features than any other at its price, the reviews on this goggle speak for themselves.
+                </span>
+              </div>
+            {% elsif product.handle == "magflight-goggle-lenses-1"%}
+              <div style="margin-top: 15px;">
+                <span>
+A replacement lens for your MagFlight goggle. Looking for a night skiing option? Check out the clear lens. 
+                </span>
+              </div>
+            {% elsif product.handle == "all-black-adapt"%}
+              <div style="margin-top: 15px;">
+                <span>
+The most sought after product we've ever released: an all black, stealth bomber version of our award-winning, industry shifting, never-change-lenses-again one goggle quiver. The Adapt is our most popular model - and for good reason. The Adapt’s photochromic lens technology changes tint as the conditions change, so you’re covered in everything from bluebird to whiteout.
+                </span>
+              </div>
+                   {% elsif product.handle == "glade-x-phunkshun-single-neck-tube"%}
+              <div style="margin-top: 15px;">
+                <span>
+We teamed up with the best in the game; Phunkshun. They sustainably manufacture their entire product line just down the hill in Denver, CO. Plus Phunkshun exclusively uses Repreve® Recycled Fiber which means each product diverts an average of 6 water bottles from the landfill and turns them into darn useful products. End game? You stay cozy, and you feel good about it.                </span>
+              </div>
+            {% elsif product.handle == "challenger-goggle-low-light-lens-and-case-bundle"%}
+              <div style="margin-top: 15px;">
+                <span>
+The best value in ski goggles just got better!  This Limited-Edition (this weekend only) kit allows you to choose your Challenger goggle, and snag a spare low-light lens and protective hard case. Your kit will be complete and you'll be filled with stoke knowing you got the absolute best bang for your buck. The hardest choice you have is picking the color you like best. Get ‘em while they’re hot… or before they sell out.
+                </span>
+              </div>
+             {% elsif product.handle == "challenger-goggle-lenses"%}
+              <div style="margin-top: 15px;">
+                <span>
+A replacement lens for your Challenger goggle. 
+                </span>
+              </div>
+            {% elsif product.handle == "adapt-goggle-lenses"%}
+              <div style="margin-top: 15px;">
+                <span>
+A replacement lens for your Adapt goggle.
+                </span>
+              </div>
+            {% elsif product.handle == "magflight-goggle"%}
+              <div style="margin-top: 15px;">
+                <span>
+Winner of Blister Gear Review's "Best Of" 2022! This goggle is the total package, especially for those who want multiple, highly specialized lenses. Lens swaps happen in seconds and our bombproof magnetic system locks the lens in place quickly and securely. When we say secure, we mean it. It’s yard sale-tested. Trust us.
+                </span>
+              </div>
+            {% elsif product.handle == "quad-photochromic-goggle"%}
+              <div style="margin-top: 15px;">
+                <span>
+Our newest goggle designed specifically for the 2022 season. Constructed with all of the same features and quality we’ve built our reputation on; the Quad goggle’s toric lens ensures peripheral clarity with minimal distortion. With our photochromic lens technology that quickly adapts to the current light conditions, you’ll know not only what is in front of you, but can take in the beauty all around you. You might even see the wayward skier coming for your knees in the lift line.                </span>
+              </div>
+             {% elsif product.handle == "gamma-otg-goggle"%}
+              <div style="margin-top: 15px;">
+                <span>
+If you need to wear your prescription eyewear on the hill, look no further than our new Gamma OTG goggle.  Designed specifically with the glass-wearer in mind, the Gamma OTG was designed from the ground up to seamlessly accommodate a wide range of glasses - ensuring that you can safely navigate the terrain in any conditions.               </div>
+            {% elsif product.handle == "pico-youth-goggle"%}
+              <div style="margin-top: 15px;">
+                <span>
+We love our little shredders, yet their access to quality goggles and clear vision always seems to be limited.  Our all-new Pico goggle gives you all the best-in-class features you expect from Glade, but in a compact package.  Fog-free? Check. Scratch-resistant? Check. Wide-angle Italian-made lenses? You know it.                 </span>
+              </div>
+            {% endif %}
+            
+            {% form 'product', product %}
+            <!-- product price -->
+            {{ form | payment_terms }}
+
+            <!-- product form content -->
+            {% endform %}
+            
+
+            {%- if settings.product_save_amount -%}
+              {%- if settings.product_save_type == 'dollar' -%}
+                {% capture saved_amount %}{{ current_variant.compare_at_price | minus: current_variant.price | money }}{% endcapture %}
+              {%- else -%}
+                {% capture saved_amount %}{{ current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round }}%{% endcapture %}
+              {%- endif -%}
+              <span id="SavePrice-{{ section_id }}" class="product__price-savings{% if hide_sale_price %} hide{% endif %}">
+                {%- unless hide_sale_price -%}
+                  {{ 'products.general.save_html' | t: saved_amount: saved_amount }}
+                {%- endunless -%}
+              </span>
+            {%- endif -%}
+
+            <div class="product__unit-price product__unit-price--spacing product__unit-price-wrapper--{{ section_id }}{% unless current_variant.unit_price_measurement %} hide{% endunless %}">
+              {%- capture unit_price_base_unit -%}
+                <span class="product__unit-base--{{ section_id }}">
+                  {%- if current_variant.unit_price_measurement -%}
+                    {%- if current_variant.unit_price_measurement.reference_value != 1 -%}
+                      {{ current_variant.unit_price_measurement.reference_value }}
+                    {%- endif -%}
+                    {{ current_variant.unit_price_measurement.reference_unit }}
+                  {%- endif -%}
+                </span>
+              {%- endcapture -%}
+
+              <span class="product__unit-price--{{ section_id }}">{{ current_variant.unit_price | money }}</span>/{{ unit_price_base_unit }}
+            </div>
+
+            {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+              <div class="product__policies rte small--text-center">
+                <small>
+                  {%- if shop.taxes_included -%}
+                    {{ 'products.product.include_taxes' | t }}
+                  {%- endif -%}
+                  {%- if shop.shipping_policy.body != blank -%}
+                    {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+                  {%- endif -%}
+                </small>
+              </div>
+            {%- endif -%}
+
+            {%- if settings.inventory_enable or settings.inventory_transfers_enable -%}
+              {%- assign variants_with_inventory_tracking = product.variants | where: 'inventory_management', 'shopify' -%}
+
+              <script>
+                // Store inventory quantities in JS because they're no longer
+                // available directly in JS when a variant changes.
+                // Have an object that holds all potential products so it works
+                // with quick view or with multiple featured products.
+                window.inventories = window.inventories || {};
+                window.inventories['{{section_id}}'] = {};
+                 {% for variant in variants_with_inventory_tracking %}
+                  window.inventories['{{section_id}}'][{{variant.id}}] = {
+                    'quantity': {{ variant.inventory_quantity | default: 0 }},
+                    'incoming': {{ variant.incoming | default: false | json }},
+                    'next_incoming_date': {{ variant.next_incoming_date | date: format: 'date' | json }}
+                  };
+                 {% endfor %}
+              </script>
+
+              {% comment %}
+                If loaded in quick view, it might be from a JS-loaded function
+                that loads recommended products. If that's the case, the above
+                JS will not set the variant inventory. Add it to an accessible
+                data div to read later instead.
+              {% endcomment %}
+              {%- if isModal -%}
+                <div
+                  data-section-id="{{ section_id }}"
+                  class="hide js-product-inventory-data"
+                  aria-hidden="true"
+                  >
+                  {%- for variant in variants_with_inventory_tracking -%}
+                    <div
+                      class="js-variant-inventory-data"
+                      data-id="{{ variant.id }}"
+                      data-quantity="{{ variant.inventory_quantity | default: 0 }}"
+                      data-incoming="{{ variant.incoming | default: false | json }}"
+                      data-date="{{ variant.next_incoming_date | date: format: 'date' | json }}"
+                    >
+                    </div>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+
+            <hr class="hr--medium">
+
+            {%- unless isModal -%}
+              {% comment %}
+                Shopify's product form attaches a number of tracking
+                scripts that cause slower load times and false statistics.
+                Quick view modals request these on-demand.
+              {% endcomment %}
+              {% render 'product-form',
+                section_id: section_id,
+                product: product,
+                current_variant: current_variant
+              %}
+            {%- else -%}
+              <div
+                id="ProductFormHolder-{{ section_id }}"
+                class="product-form-holder"
+                data-url="{{ product.url }}"
+                data-template="{{ product.template_suffix }}"></div>
+            {%- endunless -%}
+
+            {%- if settings.trust_image != blank -%}
+              <div class="aos-animate trust-image" style="max-width: {{ settings.trust_image.width }}px;">
+                <div class="image-wrap " style="height: 0; padding-bottom: {{ 100 | divided_by: settings.trust_image.aspect_ratio }}%;">
+                  {%- assign img_url = settings.trust_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                  <img class="lazyload"
+                      data-src="{{ img_url }}"
+                      data-widths="[360, 540]"
+                      data-aspectratio="{{ settings.trust_image.aspect_ratio }}"
+                      data-sizes="auto"
+                      alt="{{ settings.trust_image.alt }}">
+                  <noscript>
+                    <img class="lazyloaded" src="{{ settings.trust_image | img_url: '540x' }}" alt="{{ settings.trust_image.alt }}">
+                  </noscript>
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- unless description_style == 'full' -%}
+              <div class="product-single__description rte">
+                {{ product.description }}
+              </div>
+
+              {% render 'product-additional-content', product: product, section_id: section_id %}
+            {%- endunless -%}
+
+            {%- if social -%}
+              {% render 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+            {%- endif -%}
+          </div>
+        </div>
+
+        {%- unless image_position == 'left' -%}
+          <div class="grid__item {{ product_image_width }}">
+            {% render 'product-images',
+              section_id: section_id,
+              product: product,
+              isModal: isModal,
+              image_position: image_position,
+              product_zoom_size: product_zoom_size,
+              product_image_size: product_image_size,
+              thumbnail_arrows: thumbnail_arrows,
+              thumbnail_position: thumbnail_position,
+              video_looping: video_looping,
+              video_style: video_style
+            %}
+          </div>
+        {%- endunless -%}
+      </div>
+
+      {%- if description_style == 'full' -%}
+        <div class="product-single__description-full rte">
+          {{ product.description }}
+        </div>
+
+        {% render 'product-additional-content', product: product, section_id: section_id %}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
