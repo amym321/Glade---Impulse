@@ -94,7 +94,7 @@
       </div>
     {% endraw %}{% endif %}{% raw %}
   </div>
-  <div class="drawer__footer appear-animation appear-delay-{{lastAnimationRow}}">
+  <div style="padding-bottom: 0;" class="drawer__footer appear-animation appear-delay-{{lastAnimationRow}}">
     {{#if cartDiscounts }}
       <div class="grid grid--full">
         <div class="grid__item one-half">
@@ -146,9 +146,30 @@
     
       
           
-    <button type="submit" class="btn btn--full cart__checkout{% endraw %}{% if settings.cart_terms_conditions_enable %}{% raw %} cart__checkout--ajax{% endraw %}{% endif %}{% raw %}" name="checkout">
+    <button style="margin-bottom: 5px;" type="submit" class="btn btn--full cart__checkout{% endraw %}{% if settings.cart_terms_conditions_enable %}{% raw %} cart__checkout--ajax{% endraw %}{% endif %}{% raw %}" name="checkout">
       {% endraw %}{{ 'cart.general.checkout' | t }}{% raw %}
     </button>
+
+    {% endraw %}
+    {% comment %} payment icons - am {% endcomment %}
+    <style>
+      .methods-of-payment img { padding: 0.2em 0.2em 0 0.2em; }
+      .lt-ie9 .methods-of-payment, .ie8 .methods-of-payment, .oldie .methods-of-payment { display: none; }
+      @media screen and (min-width: 769px) { .payment-methods-container { width: 74%; margin: auto; } }
+      @media screen and (max-width: 768px) { .payment-methods-container { width: 92%; margin: auto; } }
+      @media screen and (max-width: 359px) { .payment-methods-container { width: 70%; margin: none; } }
+    </style>
+    <div class="payment-methods-container">
+      <span class="methods-of-payment">
+        <img src="{{ 'american_express' | payment_type_img_url }}" height="28" alt="american express" />
+        <img src="{{ 'master' | payment_type_img_url }}" height="28" alt="master" />
+        <img src="{{ 'paypal' | payment_type_img_url }}" height="28" alt="paypal" />
+        <img src="{{ 'visa' | payment_type_img_url }}" height="28" alt="visa" />
+        <img src="{{ 'shopify_pay' | payment_type_img_url }}" height="28" alt="shop pay" />
+      </span>
+    </div>
+    {% raw %}
+    
   </div>
 {% endraw %}
 </script>
