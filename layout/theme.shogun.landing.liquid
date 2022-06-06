@@ -10,7 +10,7 @@ This file can be re-written at any time.
 <head>
   
 
-
+<script src="https://www.googleoptimize.com/optimize.js?id=OPT-5WD9NJS"></script>
   <meta name="google-site-verification" content="0-IwzVmrO9WLntizDhaEOlivOXEEebrHJnu9lJ70XKg" />
 {% render 'spurit_uac_open_graph_snippet' %}
   {% include 'yett' %}
@@ -89,7 +89,13 @@ This file can be re-written at any time.
     };
   </script>
 
-  {{ content_for_header }}
+  <!-- starapps_scripts_start -->
+<!-- This code is automatically managed by StarApps Studio -->
+<!-- Please contact support@starapps.studio for any help -->
+{% render "starapps-product-json", product: product, starapps_app: "VIA", starapps_attribute: "sa-product-json" %}
+<script type="text/javascript" src="https://bcdn.starapps.studio/apps/via/glade-optics/script-1652713482.js?shop={{shop.permanent_domain}}" async></script>
+<!-- starapps_scripts_end -->
+{{ content_for_header }}
 {%- render 'bold-common' -%}
 
   <script src="{{ 'vendor-scripts-v6.js' | asset_url | split: '?' | first }}" defer="defer"></script>
@@ -128,6 +134,20 @@ This file can be re-written at any time.
         a.appendChild(r);
     })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 </script>
+  <!-- Install this snippet AFTER the Hotjar tracking code. -->
+<script>
+var userId = your_user_id || null; // Replace your_user_id with your own if available.
+window.hj('identify', userId, {
+    // Add your own custom attributes here. Some EXAMPLES:
+    // 'Signed up': '2019—06-20Z', // Signup date in ISO-8601 format.
+    // 'Last purchase category': 'Electronics', // Send strings with quotes around them.
+    // 'Total purchases': 15, // Send numbers without quotes.
+    // 'Last purchase date': '2019-06-20Z', // Send dates in ISO-8601 format.
+    // 'Last refund date': null, // Send null when no value exists for a user.
+});
+</script>
+
+  {% if content_for_header contains 'rio.pwztag.com' %}{% render 'productwiz-rio', product: product, shop: shop, installGuard: true %}{% endif %}
 
 </head>
 
