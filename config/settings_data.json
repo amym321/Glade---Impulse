@@ -526,8 +526,8 @@
       "1524685997883": {
         "type": "newsletter",
         "settings": {
-          "title": "Join us.",
-          "text": "",
+          "title": "SIGN UP AND SAVE 10%",
+          "text": "<p>Sign up for our newsletter to keep up to date on new product launches and 10% off your first order.<\/p>",
           "color_background": "#000000",
           "color_text": "#ffffff"
         }
