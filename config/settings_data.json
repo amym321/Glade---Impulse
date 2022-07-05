@@ -821,6 +821,7 @@
       },
       "16098827546f656a37": {
         "type": "text-and-image",
+        "disabled": true,
         "settings": {
           "image": "shopify:\/\/shop_images\/GladeGoggles-P-TipsUp-Youtube-Cover-Artwork.jpg",
           "image_width": 500,
