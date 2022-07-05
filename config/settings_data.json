@@ -1496,21 +1496,29 @@
           "divider": false
         }
       },
-      "1657050631e0a3f610": {
-        "type": "featured-content",
-        "disabled": true,
+      "1657051138dbcd07e2": {
+        "type": "advanced-content",
+        "blocks": {
+          "1657051138dbcd07e2-1": {
+            "type": "html",
+            "settings": {
+              "code": "⭐⭐⭐⭐⭐ 5.0 | Over 20,000 Happy Customers",
+              "width": "50%",
+              "alignment": "center"
+            }
+          }
+        },
+        "block_order": [
+          "1657051138dbcd07e2-1"
+        ],
         "settings": {
-          "title": "",
-          "text": "<p>⭐⭐⭐⭐⭐ 5.0 | Over 20,000 Happy Customers<\/p>",
-          "align_text": "center",
-          "narrow_column": false,
-          "enlarge_text": false,
-          "divider": false
+          "full_width": false,
+          "space_around": false
         }
       }
     },
     "content_for_index": [
-      "1657050631e0a3f610",
+      "1657051138dbcd07e2",
       "1636562278247868da",
       "1657049220b4f21f2b",
       "1595446066719",
