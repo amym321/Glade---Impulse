@@ -145,9 +145,9 @@
           "1521051841065": {
             "type": "announcement",
             "settings": {
-              "text": "Take our 30 second quiz",
-              "link_text": "FIND YOUR PAIR",
-              "link": "https:\/\/www.shopglade.com\/pages\/sunglasses-quiz"
+              "text": "FREE SHIPPING AVAILABLE ON ALL ORDERS",
+              "link_text": "",
+              "link": ""
             }
           }
         },
@@ -1411,14 +1411,14 @@
             "type": "image",
             "settings": {
               "top_subheading": "",
-              "title": "SUNGLASSES FOR MOUNTAIN LIVING",
+              "title": "",
               "title_size": 40,
-              "subheading": "Purpose built to take you from the trail, to the river, to the patio, and back again.",
+              "subheading": "",
               "link": "https:\/\/www.shopglade.com\/pages\/sunglasses-quiz",
-              "link_text": "FIND YOUR PAIR",
+              "link_text": "Find Your pair: Take our 1 minute quiz →",
               "link_2": "",
               "link_text_2": "",
-              "color_accent": "#08647d",
+              "color_accent": "#1c1d1d",
               "text_align": "vertical-bottom horizontal-left",
               "image": "shopify:\/\/shop_images\/KVasey_GLADE_LowGrain-9659.jpg",
               "focal_point": "center center"
@@ -1515,11 +1515,23 @@
           "full_width": false,
           "space_around": false
         }
+      },
+      "16570577334a180f39": {
+        "type": "featured-content",
+        "settings": {
+          "title": "",
+          "text": "<p><strong>Premium, Hand-Crafted Eyewear Designed for Mountain Town Living<\/strong><\/p>",
+          "align_text": "center",
+          "narrow_column": false,
+          "enlarge_text": true,
+          "divider": false
+        }
       }
     },
     "content_for_index": [
       "1657051138dbcd07e2",
       "1636562278247868da",
+      "16570577334a180f39",
       "1657049220b4f21f2b",
       "1595446066719",
       "163191262483bfc78c",
