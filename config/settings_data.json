@@ -249,18 +249,6 @@
           "social_sharing_blog": true
         }
       },
-      "1498163293234": {
-        "type": "featured-content",
-        "disabled": true,
-        "settings": {
-          "title": "",
-          "text": "<p>Born in Vermont and built in Colorado, we are a grassroots, independent brand building goggles and helmets for dedicated skiers and snowboarders.<\/p><p><\/p><p>Our equipment comes ready to roll right out of the box with everything you need, and nothing you don't.<\/p>",
-          "align_text": "center",
-          "narrow_column": true,
-          "enlarge_text": true,
-          "divider": false
-        }
-      },
       "blog-template": {
         "type": "blog-template",
         "settings": {
@@ -510,19 +498,6 @@
           "grid": "3"
         }
       },
-      "1524685919990": {
-        "type": "featured-collection",
-        "disabled": true,
-        "settings": {
-          "title": "OUR GOGGLES",
-          "home_featured_products": "goggles",
-          "per_row": 3,
-          "rows": 1,
-          "mobile_scrollable": true,
-          "view_all": false,
-          "divider": true
-        }
-      },
       "1524685997883": {
         "type": "newsletter",
         "settings": {
@@ -530,89 +505,6 @@
           "text": "<p>Sign up for our newsletter to keep up to date on new product launches and 10% off your first order.<\/p>",
           "color_background": "#000000",
           "color_text": "#ffffff"
-        }
-      },
-      "1525878145666": {
-        "type": "promo-grid",
-        "disabled": true,
-        "blocks": {
-          "1525879359021": {
-            "type": "advanced",
-            "settings": {
-              "subheading": "",
-              "heading": "",
-              "textarea": "",
-              "cta_text1": "Shop goggles",
-              "cta_link1": "shopify:\/\/pages\/ski-goggles",
-              "cta_text2": "",
-              "cta_link2": "",
-              "image": "shopify:\/\/shop_images\/BLISTER_EDIT_73ea0edd-8c0a-4024-bb25-da72ec2794fa.jpg",
-              "video_url": "",
-              "width": "33",
-              "height": 560,
-              "text_size": 115,
-              "text_align": "vertical-bottom horizontal-center",
-              "focal_point": "top",
-              "color_accent": "#40a22a",
-              "boxed": false,
-              "framed": false
-            }
-          },
-          "1588625715338": {
-            "type": "advanced",
-            "settings": {
-              "subheading": "",
-              "heading": "",
-              "textarea": "",
-              "cta_text1": "SHOP HELMETS",
-              "cta_link1": "shopify:\/\/products\/ski-helmet-snowboard-helmet",
-              "cta_text2": "",
-              "cta_link2": "",
-              "image": "shopify:\/\/shop_images\/20200105_jonresnick-3_1.jpg",
-              "video_url": "",
-              "width": "33",
-              "height": 500,
-              "text_size": 115,
-              "text_align": "vertical-bottom horizontal-center",
-              "focal_point": "top",
-              "color_accent": "#40a22a",
-              "boxed": false,
-              "framed": false
-            }
-          },
-          "1588625789930": {
-            "type": "advanced",
-            "settings": {
-              "subheading": "",
-              "heading": "",
-              "textarea": "",
-              "cta_text1": "SHOP COLLABS",
-              "cta_link1": "shopify:\/\/pages\/the-local-collection",
-              "cta_text2": "",
-              "cta_link2": "",
-              "image": "shopify:\/\/shop_images\/20180215_bvc_10_jonresnick_2.jpg",
-              "video_url": "",
-              "width": "33",
-              "height": 500,
-              "text_size": 100,
-              "text_align": "vertical-bottom horizontal-center",
-              "focal_point": "center",
-              "color_accent": "#40a22a",
-              "boxed": false,
-              "framed": false
-            }
-          }
-        },
-        "block_order": [
-          "1525879359021",
-          "1588625715338",
-          "1588625789930"
-        ],
-        "settings": {
-          "full_width": false,
-          "gutter_size": 10,
-          "space_above": true,
-          "space_below": false
         }
       },
       "collection-promotions": {
@@ -681,37 +573,6 @@
           "divider": false
         }
       },
-      "1595524619143": {
-        "type": "advanced-content",
-        "disabled": true,
-        "blocks": {
-          "1595524619143-0": {
-            "type": "image",
-            "settings": {
-              "image": "shopify:\/\/shop_images\/Copy_of_Untitled_4.png",
-              "link": "shopify:\/\/pages\/goggle-finder",
-              "width": "50%",
-              "alignment": "top-middle"
-            }
-          },
-          "1595524619143-1": {
-            "type": "html",
-            "settings": {
-              "code": "<h2>Not sure which goggle is right for you? <\/h2>\nTake our quiz!",
-              "width": "50%",
-              "alignment": "center"
-            }
-          }
-        },
-        "block_order": [
-          "1595524619143-0",
-          "1595524619143-1"
-        ],
-        "settings": {
-          "full_width": false,
-          "space_around": true
-        }
-      },
       "1595525253494": {
         "type": "featured-collection",
         "settings": {
@@ -764,7 +625,7 @@
         "disabled": true,
         "settings": {
           "title": "Follow us on Instagram",
-          "subheading": "<p>We&#x27;re fun people.<\/p>",
+          "subheading": "<p>We're fun people.<\/p>",
           "button_text": "",
           "button_link": "",
           "layout": "grid",
@@ -785,21 +646,6 @@
           "overlay_opacity": 65
         }
       },
-      "1597685243226": {
-        "type": "text-and-image",
-        "disabled": true,
-        "settings": {
-          "image": "shopify:\/\/shop_images\/IMG_1479.jpg",
-          "image_width": 500,
-          "subtitle": "LIMITED RELEASE",
-          "title": "The Prospect Sunglasses",
-          "text": "<p><strong>Classic yet highly technical sunglasses handmade in Italy. Built for skiers and snowboarders like you.<\/strong><\/p>",
-          "button_label": "SHOP SUNGLASSES",
-          "button_link": "shopify:\/\/products\/sunglasses",
-          "layout": "left",
-          "divider": true
-        }
-      },
       "1599461573955": {
         "type": "advanced-content",
         "blocks": {
@@ -818,21 +664,6 @@
         "settings": {
           "full_width": false,
           "space_around": true
-        }
-      },
-      "16098827546f656a37": {
-        "type": "text-and-image",
-        "disabled": true,
-        "settings": {
-          "image": "shopify:\/\/shop_images\/GladeGoggles-P-TipsUp-Youtube-Cover-Artwork.jpg",
-          "image_width": 500,
-          "subtitle": "",
-          "title": "CHECK US OUT ON YOUTUBE",
-          "text": "<p>Follow the Glade team as we live, work, and ski in Breckenridge, Colorado.<\/p>",
-          "button_label": "Watch now",
-          "button_link": "https:\/\/www.youtube.com\/channel\/UCY_BSLzUi5UmBwUygA2Ao7Q",
-          "layout": "left",
-          "divider": false
         }
       },
       "163191262483bfc78c": {
@@ -1535,15 +1366,9 @@
       "1657049220b4f21f2b",
       "1595446066719",
       "163191262483bfc78c",
-      "1525878145666",
       "163191263024de6434",
       "16323048614a90766c",
-      "1498163293234",
-      "1595524619143",
-      "1597685243226",
-      "16098827546f656a37",
       "1595525253494",
-      "1524685919990",
       "1599461573955",
       "1596063512839",
       "1524685997883"
