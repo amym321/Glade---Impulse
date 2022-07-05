@@ -673,7 +673,7 @@
           "home_featured_products": "sunglasses",
           "per_row": 5,
           "rows": 1,
-          "mobile_scrollable": false,
+          "mobile_scrollable": true,
           "view_all": false,
           "divider": false
         }
