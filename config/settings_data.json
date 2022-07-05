@@ -107,7 +107,7 @@
     "share_twitter": true,
     "share_pinterest": true,
     "favicon": "shopify:\/\/shop_images\/Glade_logo_mark.png",
-    "search_enable": false,
+    "search_enable": true,
     "search_type": "product,article,page",
     "predictive_search_enabled": true,
     "predictive_search_show_vendor": false,
