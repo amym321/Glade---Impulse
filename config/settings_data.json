@@ -1502,8 +1502,8 @@
           "1657051138dbcd07e2-1": {
             "type": "html",
             "settings": {
-              "code": "⭐⭐⭐⭐⭐ 5.0 | Over 20,000 Happy Customers",
-              "width": "50%",
+              "code": "<center> ⭐⭐⭐⭐⭐ 5.0 | Over 20,000 Happy Customers <\/center>",
+              "width": "100%",
               "alignment": "center"
             }
           }
