@@ -1456,19 +1456,6 @@
           "autoplay_speed": 10
         }
       },
-      "1642705447a7b47888": {
-        "type": "featured-product",
-        "disabled": true,
-        "settings": {
-          "featured_product": "all-black-adapt",
-          "show_description": true,
-          "divider": true,
-          "thumbnail_position": "beside",
-          "thumbnail_arrows": true,
-          "enable_video_looping": true,
-          "product_video_style": "muted"
-        }
-      },
       "1657049220b4f21f2b": {
         "type": "testimonials",
         "blocks": {
@@ -1508,14 +1495,25 @@
           "round_images": false,
           "divider": false
         }
+      },
+      "1657050631e0a3f610": {
+        "type": "featured-content",
+        "settings": {
+          "title": "",
+          "text": "<p>⭐⭐⭐⭐⭐ 5.0 | Over 20,000 Happy Customers<\/p>",
+          "align_text": "center",
+          "narrow_column": false,
+          "enlarge_text": false,
+          "divider": false
+        }
       }
     },
     "content_for_index": [
+      "1657050631e0a3f610",
       "1636562278247868da",
       "1657049220b4f21f2b",
       "1595446066719",
       "163191262483bfc78c",
-      "1642705447a7b47888",
       "1525878145666",
       "163191263024de6434",
       "16323048614a90766c",
