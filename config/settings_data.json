@@ -675,7 +675,7 @@
           "rows": 1,
           "mobile_scrollable": true,
           "view_all": false,
-          "divider": false
+          "divider": true
         }
       },
       "163191263024de6434": {
