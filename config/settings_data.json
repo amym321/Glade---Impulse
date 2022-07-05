@@ -630,6 +630,7 @@
       },
       "1595446066719": {
         "type": "logo-list",
+        "disabled": true,
         "blocks": {
           "1595446066719-1": {
             "type": "logo_image",
@@ -1467,10 +1468,51 @@
           "enable_video_looping": true,
           "product_video_style": "muted"
         }
+      },
+      "1657049220b4f21f2b": {
+        "type": "testimonials",
+        "blocks": {
+          "1657049220b4f21f2b-0": {
+            "type": "testimonial",
+            "settings": {
+              "testimonial": "<p>Glade proves you don’t need to drop more than $200 to have a high-quality experience.<\/p>",
+              "image": "shopify:\/\/shop_images\/OutsideLogoBanner-1_1_54329d62-f90f-47bf-9a5b-21033d888e64.jpg",
+              "author": ""
+            }
+          },
+          "1657049220b4f21f2b-1": {
+            "type": "testimonial",
+            "settings": {
+              "testimonial": "<p>Best Overall Eyewear Award Winner: After a summer of hiking and biking around Colorado, they’re as unscratched as the day we got them.<\/p>",
+              "image": "shopify:\/\/shop_images\/download_18.png",
+              "author": ""
+            }
+          },
+          "1657049220b4f21f2b-2": {
+            "type": "testimonial",
+            "settings": {
+              "testimonial": "<p>These glasses performed well in all areas and passed my many tests.<\/p>",
+              "image": "shopify:\/\/shop_images\/download_19.png",
+              "author": ""
+            }
+          }
+        },
+        "block_order": [
+          "1657049220b4f21f2b-0",
+          "1657049220b4f21f2b-1",
+          "1657049220b4f21f2b-2"
+        ],
+        "settings": {
+          "title": "",
+          "align_text": "center",
+          "round_images": false,
+          "divider": false
+        }
       }
     },
     "content_for_index": [
       "1636562278247868da",
+      "1657049220b4f21f2b",
       "1595446066719",
       "163191262483bfc78c",
       "1642705447a7b47888",
