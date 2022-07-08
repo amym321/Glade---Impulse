@@ -25,7 +25,7 @@
           {%- assign child_list_handle = link.url | handleize | append: forloop.index -%}
           {%- assign has_dropdown = false -%}
           {% if link.links != blank %}
-            {%- assign has_dropdown = false -%}
+            {%- assign has_dropdown = true -%}
           {% endif %}
 
           <li class="mobile-nav__item appear-animation appear-delay-{{ animation_row }}">
