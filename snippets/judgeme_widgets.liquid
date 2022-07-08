@@ -57,7 +57,7 @@ data-auto-install='{% if auto_install != nil %}{{ auto_install }}{% else %}false
     <span class="jdgm-all-reviews-rating-wrapper" href="javascript:void(0)">
       <span style="display:block"  data-score='{{ shop.metafields.judgeme.all_reviews_rating }}' class='jdgm-all-reviews-rating' aria-label='{{ shop.metafields.judgeme.all_reviews_rating }} stars' tabindex='0' role='img'></span>
       <span style="display: block" class='jdgm-carousel-number-of-reviews' data-number-of-reviews='{{ shop.metafields.judgeme.all_reviews_count }}'>
-        Hundreds of 5 star reviews:
+        from {{ shop.metafields.judgeme.all_reviews_count }} reviews
       </span>
 </span>  </div>
   {{ shop.metafields.judgeme.featured_carousel }}
