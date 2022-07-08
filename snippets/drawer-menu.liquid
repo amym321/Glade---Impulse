@@ -85,7 +85,7 @@
                           {% if childlink.url == '#' and has_sub_dropdown %}
                             <button type="button"
                             aria-controls="Sublinklist-{{ child_list_handle }}-{{ grand_child_list_handle }}"
-                            {% if childlink.active or childlink.child_active %}aria-open="true"{% endif %}
+                            {% if childlink.active or childlink.child_active %}aria-open="false"{% endif %}
                             class="mobile-nav__link--button collapsible-trigger {% if childlink.active or childlink.child_active %}is-open{% endif %}">
                               <span class="mobile-nav__faux-link" {% if childlink.active %}data-active="true"{% endif %}>{{ childlink.title | escape }}</span>
                               {% render 'collapsible-icons-alt' %}
