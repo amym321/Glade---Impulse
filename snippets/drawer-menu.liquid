@@ -83,7 +83,7 @@
                       <li class="mobile-nav__item">
                         <div class="mobile-nav__child-item">
                           {% if childlink.url == '#' and has_sub_dropdown %}
-                            <button type="none"
+                            <button type="button"
                             aria-controls="Sublinklist-{{ child_list_handle }}-{{ grand_child_list_handle }}"
                             {% if childlink.active or childlink.child_active %}aria-open="false"{% endif %}
                             class="mobile-nav__link--button collapsible-trigger {% if childlink.active or childlink.child_active %}is-open{% endif %}">
