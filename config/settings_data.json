@@ -161,7 +161,7 @@
           "main_menu_alignment": "center-left",
           "header_style": "sticky",
           "sticky_index": false,
-          "sticky_collection": true,
+          "sticky_collection": false,
           "announcement_compact": true,
           "announcement_above_header": true,
           "toolbar_menu": "",
