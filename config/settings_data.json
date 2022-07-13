@@ -68,7 +68,7 @@
     "product_color_swatches": true,
     "collection_color_swatches": true,
     "swatch_style": "round",
-    "trust_image": "shopify:\/\/shop_images\/Icons3-13.png",
+    "trust_image": "shopify:\/\/shop_images\/smallericons-13.png",
     "product_content_1": "",
     "product_content_collapse_1": true,
     "product_content_2": "",
@@ -243,7 +243,7 @@
           "social_enable": false,
           "image_position": "left",
           "image_size": "medium",
-          "thumbnail_position": "below",
+          "thumbnail_position": "beside",
           "thumbnail_arrows": true,
           "enable_video_looping": true,
           "product_video_style": "muted"
