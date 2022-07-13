@@ -242,7 +242,7 @@
           "description_style": "full",
           "social_enable": false,
           "image_position": "left",
-          "image_size": "medium",
+          "image_size": "large",
           "thumbnail_position": "beside",
           "thumbnail_arrows": true,
           "enable_video_looping": true,
