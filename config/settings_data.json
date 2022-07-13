@@ -181,7 +181,7 @@
               "title": "",
               "image": "shopify:\/\/shop_images\/updatedicons-11.png",
               "text": "",
-              "container_width": 35
+              "container_width": 37
             }
           },
           "1494301487049": {
@@ -189,7 +189,7 @@
             "settings": {
               "show_footer_title": false,
               "menu": "footer",
-              "container_width": 33
+              "container_width": 27
             }
           },
           "1494292487693": {
@@ -198,7 +198,7 @@
               "show_footer_title": true,
               "title": "Join the movement.",
               "text": "",
-              "container_width": 31
+              "container_width": 36
             }
           },
           "1494301487048": {
