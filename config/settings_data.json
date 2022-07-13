@@ -174,6 +174,16 @@
       "footer": {
         "type": "footer",
         "blocks": {
+          "9f597a16-513e-4ac2-a2fc-f63aae4c92c4": {
+            "type": "custom",
+            "settings": {
+              "show_footer_title": false,
+              "title": "",
+              "image": "shopify:\/\/shop_images\/updatedicons-11.png",
+              "text": "",
+              "container_width": 35
+            }
+          },
           "1494301487049": {
             "type": "menu",
             "settings": {
@@ -188,7 +198,7 @@
               "show_footer_title": true,
               "title": "Join the movement.",
               "text": "",
-              "container_width": 30
+              "container_width": 31
             }
           },
           "1494301487048": {
@@ -200,6 +210,7 @@
           }
         },
         "block_order": [
+          "9f597a16-513e-4ac2-a2fc-f63aae4c92c4",
           "1494301487049",
           "1494292487693",
           "1494301487048"
