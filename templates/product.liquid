@@ -11,6 +11,7 @@
 {% elsif product.handle contains 'magflight-goggle' %}
 {% section 'product-wipe-2' %}
 {% endif %}
+{% render 'judgeme_widgets', widget_type: 'judgeme_review_widget', concierge_install: false, product: product %}
 
 {% section 'product-recommendations' %}
 {% section 'recently-viewed' %}
@@ -61,4 +62,3 @@
  });
 </script>
 
-{% render 'judgeme_widgets', widget_type: 'judgeme_review_widget', concierge_install: false, product: product %}
