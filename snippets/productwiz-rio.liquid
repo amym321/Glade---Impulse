@@ -6,16 +6,16 @@
     __productWizRioProduct.options = {{product.options_with_values | json}};
   }
   var __productWizRioHasOnlyDefaultVariant = {{product.has_only_default_variant}};
-  var __productWizRioAssets = {{shop.metafields.productwiz.rio-assets | json}};
+  var __productWizRioAssets = {{ shop.metafields.productwiz.rio-assets.value | default: shop.metafields.productwiz.rio-assets | json }};
   if (typeof __productWizRioAssets === 'string') {
     __productWizRioAssets = JSON.parse(__productWizRioAssets);
   }
-  var __productWizRioVariantImages = {{product.metafields.productwiz.rio | json}};
-  var __productWizRioProductOptions = {{product.metafields.productwiz.rio-options | json}};
-  var __productWizRioProductOptionsSettings = {{shop.metafields.productwiz.rio-options-settings | json}};
-  var __productWizRioShop = {{shop.metafields.productwiz.rio | json}};
-  var __productWizRioProductOptionsShop = {{shop.metafields.productwiz.rio-options | json}};
-  var __productWizRioProductGallery = {{shop.metafields.productwiz.rio-gallery | json}};
+  var __productWizRioVariantImages = {{ product.metafields.productwiz.rio.value | default: product.metafields.productwiz.rio | json }};
+  var __productWizRioProductOptions = {{ product.metafields.productwiz.rio-options.value | default: product.metafields.productwiz.rio-options | json }};
+  var __productWizRioProductOptionsSettings = {{ shop.metafields.productwiz.rio-options-settings.value | default: shop.metafields.productwiz.rio-options-settings | json }};
+  var __productWizRioShop = {{ shop.metafields.productwiz.rio.value | default: shop.metafields.productwiz.rio | json }};
+  var __productWizRioProductOptionsShop = {{ shop.metafields.productwiz.rio-options.value | default: shop.metafields.productwiz.rio-options | json }};
+  var __productWizRioProductGallery = {{ shop.metafields.productwiz.rio-gallery.value | default: shop.metafields.productwiz.rio-gallery | json }};
   var __productWizRio = {};
   var __productWizRioOptions = {};
   __productWizRio.moneyFormat = {{shop.money_format | json}};
